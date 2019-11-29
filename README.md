@@ -7,3 +7,7 @@
 
 [![bao]](http://www.taobao.com)  
 [bao]:https://github.com/ahboa/webs/blob/master/imgs/1.JPG " 淘宝Logo"
+
+
+[![baidu]](http://baidu.com)  
+[baidu]:http://www.baidu.com/img/bdlogo.gif "百度Logo" 

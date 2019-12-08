@@ -67,12 +67,12 @@ h2{
 
 
 
-var path = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx5e57a6d5a7d1de27&redirect_uri=http%3A%2F%2Fwww.baidu.com%2F&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
+var path = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx5e57a6d5a7d1de27&redirect_uri=https%3A%2F%2Fahboa.github.io%2Fwebs%2F&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
 axios.get(path).then(function (res) {
-    console.log(res);
+    console.log("res>>>",res);
 
-}).catch(function (error) {
-    console.log(error);
+}).catch(function (err) {
+    console.log("err>>>", err);
 
 });
 

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>first web</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<script src="js/axios.min.js"></script>
+<script src="js/vconsole.min.js"></script>
+<script type="text/javascript">
+    var vConsole = new VConsole();
+
+    document.documentElement.style.fontSize=document.documentElement.clientWidth/7.5+"px";window.onresize=function(){document.documentElement.style.fontSize=document.documentElement.clientWidth/7.5+"px";};
+
+
+</script>
+<style type="text/css">
+
+*{margin: 0;padding: 0;}
+body{
+    font-size: .3rem;
+}
+
+h2{
+    height: .8rem;
+    line-height: .8rem;
+    font-size: .45rem;
+    text-align: center;
+}
+
+
+</style>
+</head>
+<body>
+
+
+<h2>我的测试页面</h2>
+
+
+<script type="text/javascript">
+
+// window.onload = function() {
+//     isWeixinBrowser();
+// }
+
+// //判断是否微信浏览器
+// function isWeixinBrowser() {
+//     var ua = navigator.userAgent.toLowerCase();
+//     var result = (/micromessenger/.test(ua)) ? true : false;
+//     if (result) {
+//         console.log('你正在访问微信浏览器');
+//     }
+//     else {
+//         console.log('你访问的不是微信浏览器');
+//     }
+//     return result;
+// }
+
+
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect
+// 若提示“该链接无法访问”，请检查参数是否填写错误，是否拥有scope参数对应的授权作用域权限。
+
+// scope为snsapi_base
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx520c15f417810387&redirect_uri=https%3A%2F%2Fchong.qq.com%2Fphp%2Findex.php%3Fd%3D%26c%3DwxAdapter%26m%3DmobileDeal%26showwxpaytitle%3D1%26vb2ctag%3D4_2030_5_1194_60&response_type=code&scope=snsapi_base&state=123#wechat_redirect
+
+// scope为snsapi_userinfo
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf0e81c3bee622d60&redirect_uri=http%3A%2F%2Fnba.bluewebgame.com%2Foauth_response.php&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
+
+
+
+var path = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx5e57a6d5a7d1de27&redirect_uri=http%3A%2F%2Fwww.baidu.com%2F&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
+axios.get(path).then(function (res) {
+    console.log(res);
+
+}).catch(function (error) {
+    console.log(error);
+
+});
+
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx5e57a6d5a7d1de27&redirect_uri=https%3A%2F%2Fchong.qq.com%2Fphp%2Findex.php%3Fd%3D%26c%3DwxAdapter%26m%3DmobileDeal%26showwxpaytitle%3D1%26vb2ctag%3D4_2030_5_1194_60&response_type=code&scope=snsapi_base&state=123#wechat_redirect
+
+
+</script>
+</body>
+</html>

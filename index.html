@@ -108,7 +108,7 @@ if (getPram("code") === '') {
 } else {
     this.weixinCode = getPram("code");  // 能拿到code，说明用户已同意授权，拿到coed
     console.log('获取微信code：', this.weixinCode);
-    alert(`获取微信code： this.weixinCode`);
+    alert(`获取微信code： ${this.weixinCode}`);
 }
 console.log("location.href",location.href)
 alert(location.href)

@@ -98,12 +98,12 @@ function getPram(pramName) {
 let AppId = 'wx5e57a6d5a7d1de27';  // 测试公众号平台的APPID，第1步那个链接里
 let { code = '' } = getPram("code");  // qs.parse(window.location.search); // 获取当前页面地址中的code参数的值
 let local = encodeURIComponent(window.location.href);  // 对当前地址用encodeURIComponent进行编码
-console.log("local", local)
+// console.log("local", local)
 
 
 // 如果code是''，说明还没有授权，访问下面连接，用户同意授权，获取code
 if (getPram("code") === '') {
-    alert("code===''", "没有code");
+    alert("没有code");
     window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${AppId}&redirect_uri=${local}&response_type=code&scope=snsapi_base&state=1#wechat_redirect`;
 } else {
     this.weixinCode = getPram("code");  // 能拿到code，说明用户已同意授权，拿到coed

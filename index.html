@@ -110,16 +110,16 @@ if (!getPram("code") || getPram("code") === '') {
     console.log('获取微信code：', this.weixinCode);
     // alert('获取微信code：', this.weixinCode);
 
-    location.href = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${AppId}&secret=f8220f42f5c4ebdff774dae7896d712d&code=${getPram("code")}&grant_type=authorization_code`
+    var path = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${AppId}&secret=f8220f42f5c4ebdff774dae7896d712d&code=${getPram("code")}&grant_type=authorization_code`
 
     // console.log('path', path)
-    // axios.get(path).then(function (res) {
-    //     console.log("res>>>", res);
+    axios.get(path).then(function (res) {
+        console.log("res>>>", res);
 
-    // }).catch(function (err) {
-    //     console.log("err>>>", err);
+    }).catch(function (err) {
+        console.log("err>>>", err);
 
-    // });
+    });
 }
 console.log("location.href 外部", location.href)
 // alert(location.href)

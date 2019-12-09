@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
 <script src="js/axios.min.js"></script>
 <script src="js/vconsole.min.js"></script>
+<!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
 <script type="text/javascript">
     var vConsole = new VConsole();
 
@@ -68,11 +69,12 @@ h2{
 
 
 // var path = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx5e57a6d5a7d1de27&redirect_uri=https%3A%2F%2Fahboa.github.io%2Fwebs%2F&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
-// axios.get(path).then(function (res) {
-//     console.log("res>>>",res);
+
+// axios.get("js/test.json").then(function (res) {
+//     console.log("ok----res>>>",res);
 
 // }).catch(function (err) {
-//     console.log("err>>>", err);
+//     console.log("no----err>>>", err);
 
 // });
 
@@ -114,10 +116,10 @@ if (!getPram("code") || getPram("code") === '') {
 
     // console.log('path', path)
     axios.get(path).then(function (res) {
-        console.log("res>>>", res);
+        console.log("ok----res>>>",res);
 
     }).catch(function (err) {
-        console.log("err>>>", err);
+        console.log("no----err>>>", err);
 
     });
 }

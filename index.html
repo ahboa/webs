@@ -103,12 +103,11 @@ let local = encodeURIComponent(window.location.href);  // 对当前地址用enco
 
 // 如果code是''，说明还没有授权，访问下面连接，用户同意授权，获取code
 if (getPram("code") === '') {
-    alert("没有code");
+    console.log("没有code");
     window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${AppId}&redirect_uri=${local}&response_type=code&scope=snsapi_base&state=1#wechat_redirect`;
 } else {
     this.weixinCode = getPram("code");  // 能拿到code，说明用户已同意授权，拿到coed
     console.log('获取微信code：', this.weixinCode);
-    alert(`获取微信code： ${this.weixinCode}`);
 }
 console.log("location.href",location.href)
 alert(location.href)

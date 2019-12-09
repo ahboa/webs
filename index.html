@@ -100,7 +100,7 @@ let AppId = 'wx5e57a6d5a7d1de27';  // 测试公众号平台的APPID，第1步那
 let local = encodeURIComponent(window.location.href);  // 对当前地址用encodeURIComponent进行编码
 // console.log("local", local)
 
-
+alert("code===none", "没有code");
 // 如果code是''，说明还没有授权，访问下面连接，用户同意授权，获取code
 if (!getPram("code") || getPram("code") === '') {
     alert("code===none", "没有code");

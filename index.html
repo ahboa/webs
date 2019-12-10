@@ -91,18 +91,18 @@ if (!getPram("code") || getPram("code") === '') {
     this.weixinCode = getPram("code");  // 能拿到code，说明用户已同意授权，拿到coed
     console.log('获取微信code：', this.weixinCode);
 
-    let path = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${AppId}&secret=${appsecret}&code=${getPram("code")}&grant_type=authorization_code`
+    location.href = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${AppId}&secret=${appsecret}&code=${getPram("code")}&grant_type=authorization_code`
 
-    // console.log('path', path)
-    axios.get(path).then(function (res) {
-        console.log('ok--path', path)
-        console.log("ok----res>>>",res);
 
-    }).catch(function (err) {
-        console.log('no--path', path)
-        console.log("no----err>>>", err);
+    // axios.get(path).then(function (res) {
+    //     console.log('ok--path', path)
+    //     console.log("ok----res>>>",res);
 
-    });
+    // }).catch(function (err) {
+    //     console.log('no--path', path)
+    //     console.log("no----err>>>", err);
+
+    // });
 
 
     // $.ajax({

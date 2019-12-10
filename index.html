@@ -106,11 +106,11 @@ let local = encodeURIComponent(window.location.href);  // 对当前地址用enco
 // alert("code===none", "没有code");
 // 如果code是''，说明还没有授权，访问下面连接，用户同意授权，获取code
 if (!getPram("code") || getPram("code") === '') {
-    alert("还没获取到code");
+    alert("2还没获取到code");
     window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${AppId}&redirect_uri=${local}&response_type=code&scope=snsapi_userinfo&state=alanzuotest#wechat_redirect`;
 } else {
     this.weixinCode = getPram("code");  // 能拿到code，说明用户已同意授权，拿到coed
-    console.log('获取微信code：', this.weixinCode);
+    console.log('1获取微信code：', this.weixinCode);
     // alert('获取微信code：', this.weixinCode);
 
     var path = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${AppId}&secret=f8220f42f5c4ebdff774dae7896d712d&code=${getPram("code")}&grant_type=authorization_code`
@@ -126,24 +126,29 @@ if (!getPram("code") || getPram("code") === '') {
 
     // });
 
+    $("head").append(`<script src='${path}?callback=showData'><\/script>`);
+
+    function showData(result) {
+        console.log("result", result);
+    }
 
 
-    $.ajax({
-        url: "http://query.yahooapis.com/v1/public/yql",
-        type: 'get',
-        dataType: "jsonp",//雅虎代理数据格式
-        data:{
-            q:"select * from json where url=\'"+path+"'",
-            //代理返回格式
-            format:"json"
-        },
-        success: function (res) {
-            // 一旦设置的 dataType 选项，就不再关心 服务端 响应的 Content-Type 了
-            // 客户端会主观认为服务端返回的就是 JSON 格式的字符串
-            console.log(res)
+    // $.ajax({
+    //     url: "http://query.yahooapis.com/v1/public/yql",
+    //     type: 'get',
+    //     dataType: "jsonp",//雅虎代理数据格式
+    //     data:{
+    //         q:"select * from json where url=\'"+path+"'",
+    //         //代理返回格式
+    //         format:"json"
+    //     },
+    //     success: function (res) {
+    //         // 一旦设置的 dataType 选项，就不再关心 服务端 响应的 Content-Type 了
+    //         // 客户端会主观认为服务端返回的就是 JSON 格式的字符串
+    //         console.log(res)
 
-        }
-    })
+    //     }
+    // })
 }
 console.log("location.href 外部", location.href)
 // alert(location.href)

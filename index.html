@@ -6,18 +6,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
 <script src="js/axios.min.js"></script>
 <script src="js/vconsole.min.js"></script>
-<!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
-<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="js/jquery.js"></script>
 <script type="text/javascript">
     var vConsole = new VConsole();
 
     document.documentElement.style.fontSize=document.documentElement.clientWidth/7.5+"px";window.onresize=function(){document.documentElement.style.fontSize=document.documentElement.clientWidth/7.5+"px";};
 
-
 </script>
 <style type="text/css">
 
 *{margin: 0;padding: 0;}
+
 body{
     font-size: .3rem;
 }
@@ -40,49 +39,17 @@ h2{
 
 <script type="text/javascript">
 
-// window.onload = function() {
-//     isWeixinBrowser();
-// }
-
-// //判断是否微信浏览器
-// function isWeixinBrowser() {
-//     var ua = navigator.userAgent.toLowerCase();
-//     var result = (/micromessenger/.test(ua)) ? true : false;
-//     if (result) {
-//         console.log('你正在访问微信浏览器');
-//     }
-//     else {
-//         console.log('你访问的不是微信浏览器');
-//     }
-//     return result;
-// }
-
-
-// https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect
-// 若提示“该链接无法访问”，请检查参数是否填写错误，是否拥有scope参数对应的授权作用域权限。
-
-// scope为snsapi_base
-// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx520c15f417810387&redirect_uri=https%3A%2F%2Fchong.qq.com%2Fphp%2Findex.php%3Fd%3D%26c%3DwxAdapter%26m%3DmobileDeal%26showwxpaytitle%3D1%26vb2ctag%3D4_2030_5_1194_60&response_type=code&scope=snsapi_base&state=123#wechat_redirect
-
-// scope为snsapi_userinfo
-// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf0e81c3bee622d60&redirect_uri=http%3A%2F%2Fnba.bluewebgame.com%2Foauth_response.php&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
-
-
-
-// var path = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx5e57a6d5a7d1de27&redirect_uri=https%3A%2F%2Fahboa.github.io%2Fwebs%2F&response_type=code&scope=snsapi_base&state=123#wechat_redirect";
-
-// axios.get("js/test.json").then(function (res) {
-//     console.log("ok----res>>>",res);
-
-// }).catch(function (err) {
-//     console.log("no----err>>>", err);
-
-// });
-
-// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx5e57a6d5a7d1de27&redirect_uri=https%3A%2F%2Fchong.qq.com%2Fphp%2Findex.php%3Fd%3D%26c%3DwxAdapter%26m%3DmobileDeal%26showwxpaytitle%3D1%26vb2ctag%3D4_2030_5_1194_60&response_type=code&scope=snsapi_base&state=123#wechat_redirect
-
-
-
+// 判断是否微信浏览器
+function isWx() {
+    var ua = navigator.userAgent.toLowerCase();
+    var result = (/micromessenger/.test(ua)) ? true : false;
+    if (result) {
+        console.log('你正在访问微信浏览器');
+    } else {
+        console.log('你访问的不是微信浏览器');
+    }
+    return result;
+}
 
 // 获取URL的参数
 function getPram(pramName) {
@@ -95,41 +62,47 @@ function getPram(pramName) {
     return(false);
 }
 
-    function showData(result) {
-        console.log("result", result);
-    }
+
+isWx();
+
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect
+// 若提示“该链接无法访问”，请检查参数是否填写错误，是否拥有scope参数对应的授权作用域权限。
+
+// scope为snsapi_base
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx520c15f417810387&redirect_uri=https%3A%2F%2Fchong.qq.com%2Fphp%2Findex.php%3Fd%3D%26c%3DwxAdapter%26m%3DmobileDeal%26showwxpaytitle%3D1%26vb2ctag%3D4_2030_5_1194_60&response_type=code&scope=snsapi_base&state=123#wechat_redirect
+
+// scope为snsapi_userinfo
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf0e81c3bee622d60&redirect_uri=http%3A%2F%2Fnba.bluewebgame.com%2Foauth_response.php&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
 
 
-let AppId = 'wx5e57a6d5a7d1de27';  // 测试公众号平台的APPID，第1步那个链接里
+
+let AppId = 'wx5e57a6d5a7d1de27';       // 测试公众号平台的APPID，第1步那个链接里
+let appsecret = 'f8220f42f5c4ebdff774dae7896d712d';     // 测试appsecret
 // let { code = '' } = getPram("code");  // qs.parse(window.location.search); // 获取当前页面地址中的code参数的值
-let local = encodeURIComponent(window.location.href);  // 对当前地址用encodeURIComponent进行编码
-// console.log("local", local)
+let localPath = encodeURIComponent(window.location.href);  // 对当前地址用encodeURIComponent进行编码
 
-// alert("code===none", "没有code");
+
 // 如果code是''，说明还没有授权，访问下面连接，用户同意授权，获取code
 if (!getPram("code") || getPram("code") === '') {
-    alert("2还没获取到code");
-    window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${AppId}&redirect_uri=${local}&response_type=code&scope=snsapi_userinfo&state=alanzuotest#wechat_redirect`;
+    alert("还没获取到code");
+    console.log("还没获取到code");
+    location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${AppId}&redirect_uri=${localPath}&response_type=code&scope=snsapi_userinfo&state=alanzuotest#wechat_redirect`;
 } else {
     this.weixinCode = getPram("code");  // 能拿到code，说明用户已同意授权，拿到coed
-    console.log('1获取微信code：', this.weixinCode);
-    // alert('获取微信code：', this.weixinCode);
+    console.log('获取微信code：', this.weixinCode);
 
-    var path = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${AppId}&secret=f8220f42f5c4ebdff774dae7896d712d&code=${getPram("code")}&grant_type=authorization_code`
+    let path = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${AppId}&secret=${appsecret}&code=${getPram("code")}&grant_type=authorization_code`
 
     // console.log('path', path)
-    // axios.get(path).then(function (res) {
-    //     console.log('ok--path', path)
-    //     console.log("ok----res>>>",res);
+    axios.get(path).then(function (res) {
+        console.log('ok--path', path)
+        console.log("ok----res>>>",res);
 
-    // }).catch(function (err) {
-    //     console.log('no--path', path)
-    //     console.log("no----err>>>", err);
+    }).catch(function (err) {
+        console.log('no--path', path)
+        console.log("no----err>>>", err);
 
-    // });
-
-    $("head").append(`<script src='${path}?callback=showData'><\/script>`);
-
+    });
 
 
     // $.ajax({
@@ -148,9 +121,10 @@ if (!getPram("code") || getPram("code") === '') {
 
     //     }
     // })
+
+
 }
-console.log("location.href 外部", location.href)
-// alert(location.href)
+console.log("当前页面url：", location.href);
 
 
 

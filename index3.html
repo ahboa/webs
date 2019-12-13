@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>first web</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<script src="js/axios.min.js"></script>
+<script src="js/vconsole.min.js"></script>
+<script src="js/jquery.js"></script>
+<script type="text/javascript">
+    var vConsole = new VConsole();
+    document.documentElement.style.fontSize=document.documentElement.clientWidth/7.5+"px";window.onresize=function(){document.documentElement.style.fontSize=document.documentElement.clientWidth/7.5+"px";};
+</script>
+<style type="text/css">
+
+*{margin: 0;padding: 0;}
+
+body{
+    font-size: .3rem;
+}
+
+h2{
+    height: .8rem;
+    line-height: .8rem;
+    margin: .5rem 0 .3rem 0;
+    font-size: .45rem;
+    text-align: center;
+}
+.authorBtn{
+    text-align: center;
+}
+.authorBtn button{
+    display: inline-block;
+    min-width: 3rem;
+    height: .6rem;
+    margin-bottom: .3rem;
+    line-height: .6rem;
+}
+
+#urlTxt{
+    width: 80%;
+    min-height: 2rem;
+    line-height: .5rem;
+    margin: 0 auto;
+    padding: .2rem;
+    font-size: .3rem;
+    border:.01rem solid #ccc;
+    word-break:break-all;
+}
+
+
+</style>
+</head>
+<body>
+
+
+<h2>我的测试页面</h2>
+
+<div class="authorBtn">
+    <button onclick="authorize()">测试获取微信授权</button>
+</div>
+
+<p id="urlTxt"></p>
+
+
+<script type="text/javascript">
+
+// 判断是否微信浏览器
+function isWx() {
+    var ua = navigator.userAgent.toLowerCase();
+    var result = (/micromessenger/.test(ua)) ? true : false;
+    if (result) {
+        console.log('你正在访问微信浏览器');
+    } else {
+        console.log('你访问的不是微信浏览器');
+    }
+    return result;
+}
+isWx();
+
+// 获取URL的参数
+function getPram(pramName) {
+    var prams = window.location.search.substring(1);
+    var pramItem = prams.split("&");
+    for (var i=0;i<pramItem.length;i++) {
+           var pair = pramItem[i].split("=");
+           if(pair[0] == pramName){return pair[1];}
+    }
+    return(false);
+}
+
+
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx2714e8d92cf8b698&redirect_uri=https%3A%2F%2Frsb-stg.pingan.com.cn%2Fbrcp%2Fmpp%2Fcust%2Fgalaxy%2Fmpcb%2Fredirect%3FweappNo%3Dwx2714e8d92cf8b698%26thirdPartyAppId%3D10079%26wpToken%3Ds5dy4df0sgdm27zpacsjmajfq48vnkd6%26backUrl%3Dhttp%253A%252F%252Fxxxx.pingan.com.cn%252Fyyyyyyyy%253Fa%253Dbb%2526c%253Ddd&response_type=code&scope=snsapi_base&state=sig&md=true#wechat_redirect
+
+// https://rsb-stg.pingan.com.cn/brcp/mpp/cust/galaxy/mpcb/redirect?weappNo=wx2714e8d92cf8b698&thirdPartyAppId=10079&wpToken=s5dy4df0sgdm27zpacsjmajfq48vnkd6&backUrl=http%3A%2F%2Fxxxx.pingan.com.cn%2Fyyyyyyyy%3Fa%3Dbb%26c%3Ddd
+
+// http://xxxx.pingan.com.cn/yyyyyyyy?a=bb&c=dd&nickname=%E8%B4%BE%E4%B9%BE%E9%B9%8FJarvis&nonce=974573743&partnerid=C0034&wxname=%E9%82%80%E8%81%9A%E5%90%A7&wxno=gh_ef065716f8a3&openid=o-WWc1Hk_J8ePvSTYLv_Cfr62olA&timestamp=1547801740642&headimgurl=http://thirdwx.qlogo.cn/mmopen/wFlrHz092PgQvHL7lWialVe3pP37f2pQ226cNtQtKjeKkL0FwzD6l0ghl5sxLAf6RX7vpfr7wPibOv8FibORic3stxERibl0U8JcO/132&subscribe=1&signature=60aadb4a0aae0df5f737020104edf1cff7d4f95b&unionid=oWJns08deo2OGtMUtl7fMugg8QD0
+
+// https://xxx..pingan.com.cn/bbc/wechat/loginFree.html?nickname=&nonce=654315621&partnerid=C0013&wxname=%E5%85%B4%E8%9E%8D%E8%81%94%E4%B8%8A%E6%B5%B7&wxno=gh_bbee30a60fa3&openid=ouOY66JC-NIa9xdD7qB64X-6mlWc×tamp=1558335444687&headimgurl=&subscribe=0&signature=a5e4e8e1bf5d66b7e41f2557b9c2305e601bd795&unionid=
+
+// 测试地址
+// let stgUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx42fffa0138630525&redirect_uri=https%3a%2f%2frsb-stg.pingan.com.cn%2fbrcp%2fmpp%2fcust%2fgalaxy%2fmpcb%2fredirect%3fweappNo%3dwx42fffa0138630525%26thirdPartyAppId%3d70040%26wpToken%3dxakml6n3nxo95pmhe8ubphtbzpno0eil%26oauth%3d1%26backUrl%3dhttps%253a%252f%252ftest-b-fat.pingan.com.cn%252fbranch%252fmkt%252fstreet%252findex.html&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect`;
+
+// 生产地址
+// let prdUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95415c456652ce73&redirect_uri=https%3a%2f%2frsb.pingan.com.cn%2fbrcp%2fmpp%2fcust%2fgalaxy%2fmpcb%2fredirect%3fweappNo%3dwx95415c456652ce73%26thirdPartyAppId%3d70040%26wpToken%3d7hhsep0hvrd4vyjbg400qqb0ixlxubhv%26oauth%3d1%26backUrl%3dhttps%253a%252f%252fb.pingan.com.cn%252fbranch%252fmkt%252fstreet%252findex.html&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect`;
+
+
+let urlTxt = document.getElementById("urlTxt");
+// urlTxt.innerHTML = "返回地址：" + location.href;
+
+
+// WX authorize
+function authorize() {
+    // https://ahboa.github.io/webs/index.html
+    let origin = /\:\/\/ahboa.github.io/.test(location.href) ? false : true;
+    console.log("origin", origin);
+
+    let testPath = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx42fffa0138630525&redirect_uri=https%3A%2F%2Frsb-stg.pingan.com.cn%2Fbrcp%2Fmpp%2Fcust%2Fgalaxy%2Fmpcb%2Fredirect%3FweappNo%3Dwx42fffa0138630525%26thirdPartyAppId%3D70040%26wpToken%3Dxakml6n3nxo95pmhe8ubphtbzpno0eil%26oauth%3D1%26backUrl%3Dhttps%253A%252F%252Fahboa.github.io%252Fwebs%252Findex.html&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect`;
+
+    let prdPath = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95415c456652ce73&redirect_uri=https://rsb.pingan.com.cn/brcp/mpp/cust/galaxy/mpcb/redirect?weappNo=wx95415c456652ce73&thirdPartyAppId=70040&wpToken=7hhsep0hvrd4vyjbg400qqb0ixlxubhv&oauth=1&backUrl=https%3A%2F%2Fahboa.github.io%2Fwebs%2Findex.html&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect`;
+
+    console.log("请求地址： ", origin ? prdPath : testPath);
+    location.replace(origin ? prdPath : testPath);
+
+    console.log("授权回来的地址： ", location.href);
+    urlTxt.innerHTML = "返回地址：" + location.href;
+
+}
+
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95415c456652ce73&redirect_uri=https://rsb.pingan.com.cn/brcp/mpp/cust/galaxy/mpcb/redirect?weappNo=wx95415c456652ce73&thirdPartyAppId=70040&wpToken=7hhsep0hvrd4vyjbg400qqb0ixlxubhv&oauth=1&backUrl=https%3A%2F%2Fahboa.github.io%2Fwebs%2Findex.html&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect
+
+
+
+
+</script>
+</body>
+</html>

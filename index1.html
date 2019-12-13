@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>first web</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<script src="js/axios.min.js"></script>
+<script src="js/vconsole.min.js"></script>
+<script src="js/jquery.js"></script>
+<script type="text/javascript">
+    var vConsole = new VConsole();
+
+    document.documentElement.style.fontSize=document.documentElement.clientWidth/7.5+"px";window.onresize=function(){document.documentElement.style.fontSize=document.documentElement.clientWidth/7.5+"px";};
+
+</script>
+<style type="text/css">
+
+*{margin: 0;padding: 0;}
+
+body{
+    font-size: .3rem;
+}
+
+h2{
+    height: .8rem;
+    line-height: .8rem;
+    font-size: .45rem;
+    text-align: center;
+}
+
+
+</style>
+</head>
+<body>
+
+
+<h2>我的测试页面</h2>
+
+<div>
+    <button onclick="getCode()">获取code</button>
+</div>
+
+
+<script type="text/javascript">
+
+// 判断是否微信浏览器
+function isWx() {
+    var ua = navigator.userAgent.toLowerCase();
+    var result = (/micromessenger/.test(ua)) ? true : false;
+    if (result) {
+        console.log('你正在访问微信浏览器');
+    } else {
+        console.log('你访问的不是微信浏览器');
+    }
+    return result;
+}
+
+// 获取URL的参数
+function getPram(pramName) {
+    var prams = window.location.search.substring(1);
+    var pramItem = prams.split("&");
+    for (var i=0;i<pramItem.length;i++) {
+           var pair = pramItem[i].split("=");
+           if(pair[0] == pramName){return pair[1];}
+    }
+    return(false);
+}
+
+
+isWx();
+
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect
+// 若提示“该链接无法访问”，请检查参数是否填写错误，是否拥有scope参数对应的授权作用域权限。
+
+// scope为snsapi_base
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx520c15f417810387&redirect_uri=https%3A%2F%2Fchong.qq.com%2Fphp%2Findex.php%3Fd%3D%26c%3DwxAdapter%26m%3DmobileDeal%26showwxpaytitle%3D1%26vb2ctag%3D4_2030_5_1194_60&response_type=code&scope=snsapi_base&state=123#wechat_redirect
+
+// scope为snsapi_userinfo
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf0e81c3bee622d60&redirect_uri=http%3A%2F%2Fnba.bluewebgame.com%2Foauth_response.php&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
+
+
+
+let AppId = 'wx5e57a6d5a7d1de27';       // 测试公众号平台的APPID，第1步那个链接里
+let appsecret = 'f8220f42f5c4ebdff774dae7896d712d';     // 测试appsecret
+// let { code = '' } = getPram("code");  // qs.parse(window.location.search); // 获取当前页面地址中的code参数的值
+let localPath = encodeURIComponent(window.location.href);  // 对当前地址用encodeURIComponent进行编码
+
+// 一、获取code
+// 二、然后通过code请求access_token
+
+function getCode (){
+    // 如果code是''，说明还没有授权，访问下面连接，用户同意授权，获取code
+    if (!getPram("code") || getPram("code") === '') {
+        alert("还没获取到code");
+        console.log("还没获取到code");
+        location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${AppId}&redirect_uri=${localPath}&response_type=code&scope=snsapi_userinfo&state=alanzuotest#wechat_redirect`;
+    } else {
+        this.weixinCode = getPram("code");  // 能拿到code，说明用户已同意授权，拿到coed
+        console.log('获取微信code：', this.weixinCode);
+
+        location.href = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${AppId}&secret=${appsecret}&code=${getPram("code")}&grant_type=authorization_code`
+
+
+        // axios.get(path).then(function (res) {
+        //     console.log('ok--path', path)
+        //     console.log("ok----res>>>",res);
+
+        // }).catch(function (err) {
+        //     console.log('no--path', path)
+        //     console.log("no----err>>>", err);
+
+        // });
+
+
+        // $.ajax({
+        //     url: "http://query.yahooapis.com/v1/public/yql",
+        //     type: 'get',
+        //     dataType: "jsonp",//雅虎代理数据格式
+        //     data:{
+        //         q:"select * from json where url=\'"+path+"'",
+        //         //代理返回格式
+        //         format:"json"
+        //     },
+        //     success: function (res) {
+        //         // 一旦设置的 dataType 选项，就不再关心 服务端 响应的 Content-Type 了
+        //         // 客户端会主观认为服务端返回的就是 JSON 格式的字符串
+        //         console.log(res)
+
+        //     }
+        // })
+
+
+    }
+    // console.log("当前页面url：", location.href);
+}
+
+
+
+
+    let access_token = `28_AL8uhxovg2tTKEKh-KMkOIe-blTdl9q5vSbzpTfQzwmjwQlTRTt3ZBenxTah-32Bvm9j315nV8JolxmhMmZJpjwdvpebLCS-LmRZRWFOj-A`;
+    let refresh_token = `28_NVmWWven8d-qEMO3JRECxLOthbaziOH8vbw0HjRrsIw4tfRmqdR0Xha6UTPKC95AUGwIxXYfX8DAC_I65-LKI3EnQne22QV3AiRA90dQI-o`;
+    let openid = `orMoExIDwXbDd_-IFPoB3IgJDn4c`;
+
+
+    // 三、刷新access_token
+    // 刷新access_token（如果需要）
+    // https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=APPID&grant_type=refresh_token&refresh_token=REFRESH_TOKEN
+
+
+    // 四、拉取用户信息(需scope为 snsapi_userinfo)
+    let infoPath = `https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&lang=zh_CN`;
+    axios.get(infoPath).then(function (res) {
+        console.log("ok----res>>>",res);
+
+    }).catch(function (err) {
+        console.log("no----err>>>", err);
+
+    });
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect
+// 若提示“该链接无法访问”，请检查参数是否填写错误，是否拥有scope参数对应的授权作用域权限。
+
+// scope为snsapi_base
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx520c15f417810387&redirect_uri=https%3A%2F%2Fchong.qq.com%2Fphp%2Findex.php%3Fd%3D%26c%3DwxAdapter%26m%3DmobileDeal%26showwxpaytitle%3D1%26vb2ctag%3D4_2030_5_1194_60&response_type=code&scope=snsapi_base&state=123#wechat_redirect
+
+// scope为snsapi_userinfo
+// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf0e81c3bee622d60&redirect_uri=http%3A%2F%2Fnba.bluewebgame.com%2Foauth_response.php&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect
+
+
+
+let AppId = 'wx5e57a6d5a7d1de27';       // 测试公众号平台的APPID，第1步那个链接里
+let appsecret = 'f8220f42f5c4ebdff774dae7896d712d';     // 测试appsecret
+// let { code = '' } = getPram("code");  // qs.parse(window.location.search); // 获取当前页面地址中的code参数的值
+let localPath = encodeURIComponent(window.location.href);  // 对当前地址用encodeURIComponent进行编码
+
+// 一、获取code
+// 二、然后通过code请求access_token
+
+function getCode (){
+    // 如果code是''，说明还没有授权，访问下面连接，用户同意授权，获取code
+    if (!getPram("code") || getPram("code") === '') {
+        alert("还没获取到code");
+        console.log("还没获取到code");
+        location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${AppId}&redirect_uri=${localPath}&response_type=code&scope=snsapi_userinfo&state=alanzuotest#wechat_redirect`;
+    } else {
+        this.weixinCode = getPram("code");  // 能拿到code，说明用户已同意授权，拿到coed
+        console.log('获取微信code：', this.weixinCode);
+
+        location.href = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${AppId}&secret=${appsecret}&code=${getPram("code")}&grant_type=authorization_code`
+
+
+        // axios.get(path).then(function (res) {
+        //     console.log('ok--path', path)
+        //     console.log("ok----res>>>",res);
+
+        // }).catch(function (err) {
+        //     console.log('no--path', path)
+        //     console.log("no----err>>>", err);
+
+        // });
+
+
+        // $.ajax({
+        //     url: "http://query.yahooapis.com/v1/public/yql",
+        //     type: 'get',
+        //     dataType: "jsonp",//雅虎代理数据格式
+        //     data:{
+        //         q:"select * from json where url=\'"+path+"'",
+        //         //代理返回格式
+        //         format:"json"
+        //     },
+        //     success: function (res) {
+        //         // 一旦设置的 dataType 选项，就不再关心 服务端 响应的 Content-Type 了
+        //         // 客户端会主观认为服务端返回的就是 JSON 格式的字符串
+        //         console.log(res)
+
+        //     }
+        // })
+
+
+    }
+    // console.log("当前页面url：", location.href);
+}
+
+
+
+
+    let access_token = `28_AL8uhxovg2tTKEKh-KMkOIe-blTdl9q5vSbzpTfQzwmjwQlTRTt3ZBenxTah-32Bvm9j315nV8JolxmhMmZJpjwdvpebLCS-LmRZRWFOj-A`;
+    let refresh_token = `28_NVmWWven8d-qEMO3JRECxLOthbaziOH8vbw0HjRrsIw4tfRmqdR0Xha6UTPKC95AUGwIxXYfX8DAC_I65-LKI3EnQne22QV3AiRA90dQI-o`;
+    let openid = `orMoExIDwXbDd_-IFPoB3IgJDn4c`;
+
+
+    // 三、刷新access_token
+    // 刷新access_token（如果需要）
+    // https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=APPID&grant_type=refresh_token&refresh_token=REFRESH_TOKEN
+
+
+    // 四、拉取用户信息(需scope为 snsapi_userinfo)
+    let infoPath = `https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&lang=zh_CN`;
+    axios.get(infoPath).then(function (res) {
+        console.log("ok----res>>>",res);
+
+    }).catch(function (err) {
+        console.log("no----err>>>", err);
+
+    });
+
+
+    // https://api.weixin.qq.com/sns/userinfo?access_token=28_AL8uhxovg2tTKEKh-KMkOIe-blTdl9q5vSbzpTfQzwmjwQlTRTt3ZBenxTah-32Bvm9j315nV8JolxmhMmZJpjwdvpebLCS-LmRZRWFOj-A&openid=orMoExIDwXbDd_-IFPoB3IgJDn4c&lang=zh_CN
+
+
+    // 五、检验授权凭证（access_token）是否有效
+    // https://api.weixin.qq.com/sns/auth?access_token=ACCESS_TOKEN&openid=OPENID
+
+
+    // https://api.weixin.qq.com/sns/userinfo?access_token=28_AL8uhxovg2tTKEKh-KMkOIe-blTdl9q5vSbzpTfQzwmjwQlTRTt3ZBenxTah-32Bvm9j315nV8JolxmhMmZJpjwdvpebLCS-LmRZRWFOj-A&openid=orMoExIDwXbDd_-IFPoB3IgJDn4c&lang=zh_CN
+
+
+    // 五、检验授权凭证（access_token）是否有效
+    // https://api.weixin.qq.com/sns/auth?access_token=ACCESS_TOKEN&openid=OPENID
+
+</script>
+</body>
+</html>

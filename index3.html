@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>first web</title>
+<title>测试 微信授权</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
 <script src="js/axios.min.js"></script>
 <script src="js/vconsole.min.js"></script>
@@ -111,8 +111,11 @@ let urlTxt = document.getElementById("urlTxt");
 
 // WX authorize
 function authorize() {
+    // if (!isWx() || isWxEnv('author')) return true;
+    if (!isWx() ) return true;
+
     // https://ahboa.github.io/webs/index.html
-    let origin = /\:\/\/ahboa.github.io/.test(location.href) ? false : true;
+    let origin = /\:\/\/ahboa.github.io/.test(location.href) ? true : false;
     console.log("origin", origin);
 
     let testPath = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx42fffa0138630525&redirect_uri=https%3A%2F%2Frsb-stg.pingan.com.cn%2Fbrcp%2Fmpp%2Fcust%2Fgalaxy%2Fmpcb%2Fredirect%3FweappNo%3Dwx42fffa0138630525%26thirdPartyAppId%3D70040%26wpToken%3Dxakml6n3nxo95pmhe8ubphtbzpno0eil%26oauth%3D1%26backUrl%3Dhttps%253A%252F%252Fahboa.github.io%252Fwebs%252Findex.html&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect`;
@@ -125,12 +128,117 @@ function authorize() {
     console.log("授权回来的地址： ", location.href);
     urlTxt.innerHTML = "返回地址：" + location.href;
 
+    getURIParams()
+
 }
 
 // https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95415c456652ce73&redirect_uri=https://rsb.pingan.com.cn/brcp/mpp/cust/galaxy/mpcb/redirect?weappNo=wx95415c456652ce73&thirdPartyAppId=70040&wpToken=7hhsep0hvrd4vyjbg400qqb0ixlxubhv&oauth=1&backUrl=https%3A%2F%2Fahboa.github.io%2Fwebs%2Findex.html&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect
 
 
 
+
+</script>
+
+<script type="text/javascript">
+
+// 获取URL中某个参数
+function getParams(sName) {
+    let reg = new RegExp("(^|&)" + sName + "=([^&]*)(&|$)", "i");
+    let r = window.location.search.substr(1).match(reg);
+    if (r != null)
+        return decodeURIComponent(r[2]); // (r[2]);
+    return "";
+}
+
+//设置、获取cookie
+function Cookie(key, value, options) {
+    if (arguments.length > 1 && (!/Object/.test(Object.prototype.toString.call(value)) || value === null || value === undefined)) {
+        options = options || {};
+        if (value === null || value === undefined) {
+            options.expires = -1;
+        }
+        if (typeof options.expires === 'number') {
+            let days = options.expires,
+                t = options.expires = new Date();
+            t.setDate(t.getDate() + days);
+        }
+        value = String(value);
+        document.cookie = [encodeURIComponent(key), '=', options.raw ? value : encodeURIComponent(value), options.expires ? '; expires=' + options.expires.toUTCString() : '', options.path ? '; path=' + options.path : '', options.domain ? '; domain=' + options.domain : '', options.secure ? '; secure' : ''].join('');
+        return;
+    }
+    options = value || {};
+    let decode = options.raw ? function (s) {
+        return s;
+    } : decodeURIComponent;
+    let pairs = document.cookie.split('; ');
+    for (let i = 0, pair; pair = pairs[i] && pairs[i].split('='); i++) {
+        if (decode(pair[0]) === key)
+            return decode(pair[1] || '');
+    }
+}
+
+// 获取微信授权以后返回的参数
+function getURIParams() {
+    let nickname = window.atob(decodeURIComponent(getParams("nickname"))) || Cookie('nickname') || '';
+    let nonce = getParams('nonce') || Cookie('nonce') || '';
+    let partnerid = getParams('partnerid') || Cookie('partnerid') || '';
+    let wxname =  decodeURIComponent(getParams('wxname')) || Cookie('wxname') || '';
+    let wxno = getParams('wxno') || Cookie('wxno') || '';
+    let openid = getParams('openid') || Cookie('openid') || '';
+    let timestamp = getParams('timestamp') || Cookie('timestamp') || '';
+    let headimgurl = getParams('headimgurl') || Cookie('headimgurl') || '';
+    let subscribe = getParams('subscribe') || Cookie('subscribe') || '';
+    let signature = getParams('signature') || Cookie('signature') || '';
+    let unionid = getParams('unionid') || Cookie('unionid') || '';
+
+    if (nickname != null && nickname !== '') {
+        Cookie('nickname', nickname, { path: "/" });
+    }
+    if (nonce != null && nonce !== '') {
+        Cookie('nonce', nonce, { path: "/" });
+    }
+    if (partnerid != null && partnerid !== '') {
+        Cookie('partnerid', partnerid, { path: "/" });
+    }
+    if (wxname != null && wxname !== '') {
+        Cookie('wxname', wxname, { path: "/" });
+    }
+    if (wxno != null && wxno !== '') {
+        Cookie('wxno', wxno, { path: "/" });
+    }
+    if (openid != null && openid !== '') {
+        Cookie('openid', openid, { path: "/" });
+    }
+    if (timestamp != null && timestamp !== '') {
+        Cookie('timestamp', timestamp, { path: "/" });
+    }
+    if (headimgurl != null && headimgurl !== '') {
+        Cookie('headimgurl', headimgurl, { path: "/" });
+    }
+    if (subscribe != null && subscribe !== '') {
+        Cookie('subscribe', subscribe, { path: "/" });
+    }
+    if (signature != null && signature !== '') {
+        Cookie('signature', signature, { path: "/" });
+    }
+    if (unionid != null && unionid !== '') {
+        Cookie('unionid', unionid, { path: "/" });
+    }
+
+    return {
+        nickname: nickname,
+        nonce: nonce,
+        partnerid: partnerid,
+        wxname: wxname,
+        wxno: wxno,
+        openid: openid,
+        timestamp: timestamp,
+        headimgurl: headimgurl,
+        subscribe: subscribe,
+        signature: signature,
+        unionid: unionid
+    };
+}
 
 </script>
 </body>

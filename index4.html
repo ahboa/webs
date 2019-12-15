@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>h5 页面如何获取手机陀螺仪</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<script src="js/axios.min.js"></script>
+<script src="js/vconsole.min.js"></script>
+<script src="js/jquery.js"></script>
+<script src="js/vue.js"></script>
+<script type="text/javascript">
+    var vConsole = new VConsole();
+    document.documentElement.style.fontSize=document.documentElement.clientWidth/7.5+"px";window.onresize=function(){document.documentElement.style.fontSize=document.documentElement.clientWidth/7.5+"px";};
+</script>
+<style type="text/css">
+
+*{margin: 0;padding: 0;}
+
+body{
+    font-size: .3rem;
+}
+
+h2{
+    height: .8rem;
+    line-height: .8rem;
+    margin: .5rem 0 .3rem 0;
+    font-size: .45rem;
+    text-align: center;
+}
+h3{
+    line-height: .7rem;
+    text-align: center;
+}
+
+ul{
+    width: 80%;
+    margin: 0 auto;
+    border: .01rem solid #ccc;
+    border-bottom: none;
+}
+
+li{
+    box-sizing: border-box;
+    list-style: none;
+    line-height: .7rem;
+    padding: 0 .3rem;
+    border-bottom: .01rem solid #ccc;
+}
+
+#app{
+    margin-bottom: .5rem;
+}
+
+
+</style>
+</head>
+<body>
+
+<h2>测试 手机陀螺仪</h2>
+
+<div id="app">
+
+    <ul>
+        <li>设备是否提供绝对定位(absolute)数据: {{absolute}}</li>
+        <li>设备沿z轴(alpha)上的旋转角度: {{alpha}}</li>
+        <li>设备在x轴(beta)上的旋转角度: {{beta}}</li>
+        <li>设备在y轴(gamma)上的旋转角度: {{gamma}}</li>
+    </ul>
+</div>
+
+<!--
+<h3>直接显示数据</h3>
+<ul id="mobBox">
+    <li>设备是否提供绝对定位数据：</li>
+    <li>设备沿z轴上的旋转角度：</li>
+    <li>设备在x轴上的旋转角度：</li>
+    <li>设备在y轴上的旋转角度：</li>
+</ul> -->
+
+
+
+<script type="text/javascript">
+
+
+let vm = new Vue({
+    el: '#app',
+    data: {
+        msg: "hello",
+        title: '测试 手机陀螺仪',
+        absolute: '',
+        alpha: '0',
+        beta: '0',
+        gamma: '0',
+    },
+    watch: {
+        // msg : function(nval,oval){
+        //     console.log('nval', nval)
+        //     console.log('oval', oval)
+        // },
+        // alpha: function(newVal,oldVal){
+        //     console.log('new--alpha', newVal)
+        //     console.log('old--alpha', oldVal)
+        // }
+    },
+    computed: {
+        // msg1: function() {
+        //     return 'computed: ' + this.msg
+        // },
+        // alpha: function() {
+        //     return 'computed: ' + this.alpha
+        // }
+    },
+    methods: {
+        // 获取手机陀螺仪参数
+        getGyro(){
+            let that = this;
+            if (window.DeviceOrientationEvent) {
+                console.log("支持 deviceorientation", window.DeviceOrientationEvent)
+                window.addEventListener('deviceorientation', function(e){
+                    that.absolute= e.absolute;
+                    that.alpha= parseInt(e.alpha);
+                    that.beta= parseInt(e.beta);
+                    that.gamma= parseInt(e.gamma);
+                    console.log('absolute', that.absolute)
+                    console.log('alpha', that.alpha)
+                    console.log('beta', that.beta)
+                    console.log('gamma', that.gamma)
+                });
+            } else {
+                console.log("--不--支持 deviceorientation")
+            }
+        }
+    },
+    mounted(){
+        console.log('entry————page')
+        this.getGyro();
+
+
+
+    },
+    updated(){
+
+    }
+})
+
+
+
+
+
+
+
+
+// let oUl = document.getElementById("mobBox");
+// let oLi = oUl.getElementsByTagName("li")
+
+// window.addEventListener('deviceorientation', function(e){
+//     console.log('deviceorientation: ' + e);
+//     console.log('absolute: ' + e.absolute);
+//     console.log('alpha: ' + e.alpha);
+//     console.log('beta: ' + e.beta);
+//     console.log('gamma: ' + e.gamma);
+//     oLi[0].innerHTML = '设备是否提供绝对定位(absolute)数据：' + e.absolute;
+//     oLi[1].innerHTML = '设备沿z轴(alpha)上的旋转角度：' + parseInt(e.alpha);
+//     oLi[2].innerHTML = '设备在x轴(beta)上的旋转角度：' + parseInt(e.beta);
+//     oLi[3].innerHTML = '设备在y轴(gamma)上的旋转角度：' + parseInt(e.gamma);
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 判断是否微信浏览器
+function isWx() {
+    var ua = navigator.userAgent.toLowerCase();
+    var result = (/micromessenger/.test(ua)) ? true : false;
+    if (result) {
+        console.log('你正在访问微信浏览器');
+    } else {
+        console.log('你访问的不是微信浏览器');
+    }
+    return result;
+}
+// isWx();
+
+// 获取URL的参数
+function getPram(pramName) {
+    var prams = window.location.search.substring(1);
+    var pramItem = prams.split("&");
+    for (var i=0;i<pramItem.length;i++) {
+           var pair = pramItem[i].split("=");
+           if(pair[0] == pramName){return pair[1];}
+    }
+    return(false);
+}
+
+
+
+
+
+</script>
+
+<script type="text/javascript">
+
+// 获取URL中某个参数
+function getParams(sName) {
+    let reg = new RegExp("(^|&)" + sName + "=([^&]*)(&|$)", "i");
+    let r = window.location.search.substr(1).match(reg);
+    if (r != null)
+        return decodeURIComponent(r[2]); // (r[2]);
+    return "";
+}
+
+//设置、获取cookie
+function Cookie(key, value, options) {
+    if (arguments.length > 1 && (!/Object/.test(Object.prototype.toString.call(value)) || value === null || value === undefined)) {
+        options = options || {};
+        if (value === null || value === undefined) {
+            options.expires = -1;
+        }
+        if (typeof options.expires === 'number') {
+            let days = options.expires,
+                t = options.expires = new Date();
+            t.setDate(t.getDate() + days);
+        }
+        value = String(value);
+        document.cookie = [encodeURIComponent(key), '=', options.raw ? value : encodeURIComponent(value), options.expires ? '; expires=' + options.expires.toUTCString() : '', options.path ? '; path=' + options.path : '', options.domain ? '; domain=' + options.domain : '', options.secure ? '; secure' : ''].join('');
+        return;
+    }
+    options = value || {};
+    let decode = options.raw ? function (s) {
+        return s;
+    } : decodeURIComponent;
+    let pairs = document.cookie.split('; ');
+    for (let i = 0, pair; pair = pairs[i] && pairs[i].split('='); i++) {
+        if (decode(pair[0]) === key)
+            return decode(pair[1] || '');
+    }
+}
+
+// 获取微信授权以后返回的参数
+function getURIParams() {
+    let nickname = window.atob(decodeURIComponent(getParams("nickname"))) || Cookie('nickname') || '';
+    let nonce = getParams('nonce') || Cookie('nonce') || '';
+    let partnerid = getParams('partnerid') || Cookie('partnerid') || '';
+    let wxname =  decodeURIComponent(getParams('wxname')) || Cookie('wxname') || '';
+    let wxno = getParams('wxno') || Cookie('wxno') || '';
+    let openid = getParams('openid') || Cookie('openid') || '';
+    let timestamp = getParams('timestamp') || Cookie('timestamp') || '';
+    let headimgurl = getParams('headimgurl') || Cookie('headimgurl') || '';
+    let subscribe = getParams('subscribe') || Cookie('subscribe') || '';
+    let signature = getParams('signature') || Cookie('signature') || '';
+    let unionid = getParams('unionid') || Cookie('unionid') || '';
+
+    if (nickname != null && nickname !== '') {
+        Cookie('nickname', nickname, { path: "/" });
+    }
+    if (nonce != null && nonce !== '') {
+        Cookie('nonce', nonce, { path: "/" });
+    }
+    if (partnerid != null && partnerid !== '') {
+        Cookie('partnerid', partnerid, { path: "/" });
+    }
+    if (wxname != null && wxname !== '') {
+        Cookie('wxname', wxname, { path: "/" });
+    }
+    if (wxno != null && wxno !== '') {
+        Cookie('wxno', wxno, { path: "/" });
+    }
+    if (openid != null && openid !== '') {
+        Cookie('openid', openid, { path: "/" });
+    }
+    if (timestamp != null && timestamp !== '') {
+        Cookie('timestamp', timestamp, { path: "/" });
+    }
+    if (headimgurl != null && headimgurl !== '') {
+        Cookie('headimgurl', headimgurl, { path: "/" });
+    }
+    if (subscribe != null && subscribe !== '') {
+        Cookie('subscribe', subscribe, { path: "/" });
+    }
+    if (signature != null && signature !== '') {
+        Cookie('signature', signature, { path: "/" });
+    }
+    if (unionid != null && unionid !== '') {
+        Cookie('unionid', unionid, { path: "/" });
+    }
+
+    return {
+        nickname: nickname,
+        nonce: nonce,
+        partnerid: partnerid,
+        wxname: wxname,
+        wxno: wxno,
+        openid: openid,
+        timestamp: timestamp,
+        headimgurl: headimgurl,
+        subscribe: subscribe,
+        signature: signature,
+        unionid: unionid
+    };
+}
+
+</script>
+</body>
+</html>

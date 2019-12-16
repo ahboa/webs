@@ -110,7 +110,7 @@ function authorize(){
     if(!getPram('code')){   // 如果回调地址 没有code
         location.href = path;
     }else{
-        let el = docuemnt.getElementById("nowUrl");
+        let el = document.getElementById("nowUrl");
         el.innerHTML = location.href;
     }
 

@@ -51,6 +51,14 @@ li{
     margin-bottom: .5rem;
 }
 
+h3{
+    line-height: .9rem;
+    padding: .5rem;
+    font-size: .38rem;
+    text-align: center;
+
+}
+
 
 </style>
 </head>
@@ -66,6 +74,8 @@ li{
         <li>设备在x轴(beta)上的旋转角度: {{beta}}</li>
         <li>设备在y轴(gamma)上的旋转角度: {{gamma}}</li>
     </ul>
+
+    <h3>当前屏幕方向：{{screenArrow}}</h3>
 </div>
 
 <!--
@@ -91,6 +101,9 @@ let vm = new Vue({
         alpha: '0',
         beta: '0',
         gamma: '0',
+
+        screenArrow: "",
+
     },
     watch: {
         // msg : function(nval,oval){
@@ -111,6 +124,7 @@ let vm = new Vue({
         // }
     },
     methods: {
+
         // 获取手机陀螺仪参数
         getGyro(){
             let that = this;
@@ -121,22 +135,19 @@ let vm = new Vue({
                     that.alpha= parseInt(e.alpha);
                     that.beta= parseInt(e.beta);
                     that.gamma= parseInt(e.gamma);
-                    console.log('absolute', that.absolute)
-                    console.log('alpha', that.alpha)
-                    console.log('beta', that.beta)
-                    console.log('gamma', that.gamma)
-                    // that.doo(that.alpha)
+                    // console.log('absolute', that.absolute)
+                    // console.log('alpha', that.alpha)
+                    // console.log('beta', that.beta)
+                    // console.log('gamma', that.gamma)
                 });
             } else {
                 console.log("--不--支持 deviceorientation")
             }
         },
 
-        doo(msg){
-            alert("message", msg)
-        },
 
-        test(){
+        // 每隔一定时间 console一次
+        perConsole(){
             for (let i = 0; i <=5 ; i++) {
                 (()=>{
                     setTimeout(function () {
@@ -147,13 +158,32 @@ let vm = new Vue({
         },
 
 
+        // 判断横屏/竖屏
+        howArrow(){
+            let that = this;
+            function arrow() {
+                if (window.orientation == 180 || window.orientation == 0) {
+                    that.screenArrow = '||| 竖屏 |||';
+                }
+                if (window.orientation == 90 || window.orientation == -90) {
+                    that.screenArrow = '--- 横屏 ---';
+                }
+            }
+            window.addEventListener("load", arrow, false);
+            window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", arrow, false);
+        },
+
 
     },
     mounted(){
         console.log('entry————page')
         this.getGyro();
 
-        this.test()
+        // this.perConsole();
+
+        this.howArrow();
+
+
 
 
     },

@@ -151,10 +151,10 @@ let vm = new Vue({
                     that.beta= parseInt(e.beta);
                     that.gamma= parseInt(e.gamma);
 
-                    console.log('absolute：', that.absolute);
-                    console.log('alpha：', that.alpha);
-                    console.log('beta：', that.beta);
-                    console.log('gamma：', that.gamma);
+                    // console.log('absolute：', that.absolute);
+                    // console.log('alpha：', that.alpha);
+                    // console.log('beta：', that.beta);
+                    // console.log('gamma：', that.gamma);
                 });
             } else {
                 console.log("--不--支持陀螺仪 deviceorientation!");
@@ -164,35 +164,57 @@ let vm = new Vue({
 
         getGyroNew(){
             let that = this;
-            
+
             // 新版兼容ios13
             // if (window.DeviceOrientationEvent) {
             if (window.DeviceOrientationEvent && window.DeviceOrientationEvent.requestPermission) {
                 console.log("NNN---支持陀螺仪 deviceorientation, 且有requestPermission回调：", window.DeviceOrientationEvent);
                 console.log("NNN---回调requestPermission: ", window.DeviceOrientationEvent.requestPermission);
 
-                DeviceOrientationEvent.requestPermission().then((state) => {
+                window.DeviceOrientationEvent.requestPermission().then((state) => {
                     //在这里调用陀螺仪事件
                     console.log("NNN---进入requestPermission回调：state:", state);
 
                     window.addEventListener('deviceorientation', function(e){
+                        console.log("NNN---进入监听：", e);
+
                         that.absoluteN= e.absolute;
                         that.alphaN= parseInt(e.alpha);
                         that.betaN= parseInt(e.beta);
                         that.gammaN= parseInt(e.gamma);
 
-                        console.log('absolute-N：', that.absoluteN);
-                        console.log('alpha-N：', that.alphaN);
-                        console.log('beta-N：', that.betaN);
-                        console.log('gamma-N：', that.gammaN);
+                        // console.log('absolute-N：', that.absoluteN);
+                        // console.log('alpha-N：', that.alphaN);
+                        // console.log('beta-N：', that.betaN);
+                        // console.log('gamma-N：', that.gammaN);
                     });
 
+                }).catch((err)=> {
+                    console.log("NNN---进入err回调：err:", err);
                 });
-                
+
             } else {
                 console.log("NNN---不--支持陀螺仪 deviceorientation!");
             }
 
+        },
+
+        permission () {
+            if ( typeof( DeviceMotionEvent ) !== "undefined" && typeof( DeviceMotionEvent.requestPermission ) === "function" ) {
+                // (optional) Do something before API request prompt.
+                DeviceMotionEvent.requestPermission()
+                    .then( response => {
+                    // (optional) Do something after API prompt dismissed.
+                    if ( response == "granted" ) {
+                        window.addEventListener( "devicemotion", (e) => {
+                            // do something for 'e' here.
+                        })
+                    }
+                })
+                    .catch( console.error )
+            } else {
+                console.log("不--支持陀螺仪  DeviceMotionEvent is not defined");
+            }
         },
 
 

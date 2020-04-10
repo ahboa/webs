@@ -74,12 +74,20 @@ h3{
         <li>设备在x轴(beta)上的旋转角度: {{beta}}</li>
         <li>设备在y轴(gamma)上的旋转角度: {{gamma}}</li>
     </ul>
+    <br />
+    <ul>
+        <li>N设备是否提供绝对定位(absolute)数据: {{absoluteN}}</li>
+        <li>N设备沿z轴(alpha)上的旋转角度: {{alphaN}}</li>
+        <li>N设备在x轴(beta)上的旋转角度: {{betaN}}</li>
+        <li>N设备在y轴(gamma)上的旋转角度: {{gammaN}}</li>
+    </ul>
 
-    <h3>当前屏幕方向：{{screenArrow}}</h3>
+    <!-- <h3>当前屏幕方向：{{screenArrow}}</h3> -->
 </div>
 
-<!--
-<h3>直接显示数据</h3>
+
+<!-- 原生js 赋值 -->
+<!-- <h3>直接显示数据</h3>
 <ul id="mobBox">
     <li>设备是否提供绝对定位数据：</li>
     <li>设备沿z轴上的旋转角度：</li>
@@ -91,16 +99,22 @@ h3{
 
 <script type="text/javascript">
 
-
+// vue start
 let vm = new Vue({
     el: '#app',
     data: {
         msg: "hello",
         title: '测试 手机陀螺仪',
+
         absolute: '',
         alpha: '0',
         beta: '0',
         gamma: '0',
+
+        absoluteN: '',
+        alphaN: '0',
+        betaN: '0',
+        gammaN: '0',
 
         screenArrow: "",
 
@@ -128,21 +142,57 @@ let vm = new Vue({
         // 获取手机陀螺仪参数
         getGyro(){
             let that = this;
+            // 旧版 正常支持安卓 / ios12以下
             if (window.DeviceOrientationEvent) {
-                console.log("支持 deviceorientation", window.DeviceOrientationEvent)
+                console.log("支持陀螺仪 deviceorientation: ", window.DeviceOrientationEvent)
                 window.addEventListener('deviceorientation', function(e){
                     that.absolute= e.absolute;
                     that.alpha= parseInt(e.alpha);
                     that.beta= parseInt(e.beta);
                     that.gamma= parseInt(e.gamma);
-                    // console.log('absolute', that.absolute)
-                    // console.log('alpha', that.alpha)
-                    // console.log('beta', that.beta)
-                    // console.log('gamma', that.gamma)
+
+                    console.log('absolute：', that.absolute);
+                    console.log('alpha：', that.alpha);
+                    console.log('beta：', that.beta);
+                    console.log('gamma：', that.gamma);
                 });
             } else {
-                console.log("--不--支持 deviceorientation")
+                console.log("--不--支持陀螺仪 deviceorientation!");
             }
+
+        },
+
+        getGyroNew(){
+            let that = this;
+            
+            // 新版兼容ios13
+            // if (window.DeviceOrientationEvent) {
+            if (window.DeviceOrientationEvent && window.DeviceOrientationEvent.requestPermission) {
+                console.log("NNN---支持陀螺仪 deviceorientation, 且有requestPermission回调：", window.DeviceOrientationEvent);
+                console.log("NNN---回调requestPermission: ", window.DeviceOrientationEvent.requestPermission);
+
+                DeviceOrientationEvent.requestPermission().then((state) => {
+                    //在这里调用陀螺仪事件
+                    console.log("NNN---进入requestPermission回调：state:", state);
+
+                    window.addEventListener('deviceorientation', function(e){
+                        that.absoluteN= e.absolute;
+                        that.alphaN= parseInt(e.alpha);
+                        that.betaN= parseInt(e.beta);
+                        that.gammaN= parseInt(e.gamma);
+
+                        console.log('absolute-N：', that.absoluteN);
+                        console.log('alpha-N：', that.alphaN);
+                        console.log('beta-N：', that.betaN);
+                        console.log('gamma-N：', that.gammaN);
+                    });
+
+                });
+                
+            } else {
+                console.log("NNN---不--支持陀螺仪 deviceorientation!");
+            }
+
         },
 
 
@@ -176,12 +226,15 @@ let vm = new Vue({
 
     },
     mounted(){
-        console.log('entry————page')
+        console.log('entry————page');
+
         this.getGyro();
+
+        this.getGyroNew();
 
         // this.perConsole();
 
-        this.howArrow();
+        // this.howArrow();
 
 
 
@@ -191,6 +244,7 @@ let vm = new Vue({
 
     }
 })
+// vue end
 
 
 
@@ -198,7 +252,7 @@ let vm = new Vue({
 
 
 
-
+// 原生js
 // let oUl = document.getElementById("mobBox");
 // let oLi = oUl.getElementsByTagName("li")
 

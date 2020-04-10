@@ -125,16 +125,35 @@ let vm = new Vue({
                     console.log('alpha', that.alpha)
                     console.log('beta', that.beta)
                     console.log('gamma', that.gamma)
+                    // that.doo(that.alpha)
                 });
             } else {
                 console.log("--不--支持 deviceorientation")
             }
-        }
+        },
+
+        doo(msg){
+            alert("message", msg)
+        },
+
+        test(){
+            for (let i = 0; i <=5 ; i++) {
+                (()=>{
+                    setTimeout(function () {
+                        console.log('i',i)
+                    }, 1000*i)
+                })()
+            }
+        },
+
+
+
     },
     mounted(){
         console.log('entry————page')
         this.getGyro();
 
+        this.test()
 
 
     },

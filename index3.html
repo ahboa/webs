@@ -123,29 +123,74 @@ let urlTxt = document.getElementById("urlTxt");
 // WX authorize
 function authorize() {
     // if (!isWx() || isWxEnv('author')) return true;
-    if (!isWx() ) return true;
+    if (!isWx()) return;
 
-    // https://ahboa.github.io/webs/index.html
+    // https://ahboa.github.io/webs/index3.html
     let origin = /\:\/\/ahboa.github.io/.test(location.href) ? true : false;
     console.log("origin", origin);
 
-    let testPath = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx42fffa0138630525&redirect_uri=https%3A%2F%2Frsb-stg.pingan.com.cn%2Fbrcp%2Fmpp%2Fcust%2Fgalaxy%2Fmpcb%2Fredirect%3FweappNo%3Dwx42fffa0138630525%26thirdPartyAppId%3D70040%26wpToken%3Dxakml6n3nxo95pmhe8ubphtbzpno0eil%26oauth%3D1%26backUrl%3Dhttps%253A%252F%252Fahboa.github.io%252Fwebs%252Findex.html&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect`;
 
-    let prdPath = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95415c456652ce73&redirect_uri=https://rsb.pingan.com.cn/brcp/mpp/cust/galaxy/mpcb/redirect?weappNo=wx95415c456652ce73&thirdPartyAppId=70040&wpToken=7hhsep0hvrd4vyjbg400qqb0ixlxubhv&oauth=1&backUrl=https%3A%2F%2Fahboa.github.io%2Fwebs%2Findex.html&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect`;
+    // 我的git-index3页面作为backUrl
+    // let testPath = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx42fffa0138630525&redirect_uri=https%3A%2F%2Frsb-stg.pingan.com.cn%2Fbrcp%2Fmpp%2Fcust%2Fgalaxy%2Fmpcb%2Fredirect%3FweappNo%3Dwx42fffa0138630525%26thirdPartyAppId%3D70040%26wpToken%3Dxakml6n3nxo95pmhe8ubphtbzpno0eil%26oauth%3D1%26backUrl%3Dhttps%253A%252F%252Fahboa.github.io%252Fwebs%252Findex.html&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect`;
 
-    console.log("请求地址： ", origin ? prdPath : testPath);
-    location.replace(origin ? prdPath : testPath);
+    // let prdPath = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95415c456652ce73&redirect_uri=https://rsb.pingan.com.cn/brcp/mpp/cust/galaxy/mpcb/redirect?weappNo=wx95415c456652ce73&thirdPartyAppId=70040&wpToken=7hhsep0hvrd4vyjbg400qqb0ixlxubhv&oauth=1&backUrl=https%3A%2F%2Fahboa.github.io%2Fwebs%2Findex.html&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect`;
 
-    console.log("授权回来的地址： ", location.href);
-    urlTxt.innerHTML = "返回地址：" + location.href;
 
-    getURIParams()
+
+    // appid 平安银行公众号：生产：wx95415c456652ce73， 测试：wx42fffa0138630525
+    let appid = origin ? 'wx95415c456652ce73' : 'wx42fffa0138630525';
+
+    // 授权回调链接
+    let redirect_uri = origin ? 'https://rsb.pingan.com.cn/brcp/mpp/cust/galaxy/mpcb/redirect' : 'https://rsb-stg.pingan.com.cn/brcp/mpp/cust/galaxy/mpcb/redirect';
+
+    // wpToken 生产: 7hhsep0hvrd4vyjbg400qqb0ixlxubhv 测试: xakml6n3nxo95pmhe8ubphtbzpno0eil
+    let wpToken = origin ? '7hhsep0hvrd4vyjbg400qqb0ixlxubhv' : 'xakml6n3nxo95pmhe8ubphtbzpno0eil';
+
+    // 业务回调链接
+    let backUrl = origin ? 'https://b.pingan.com.cn/branch/mkt/street/index.html' : 'https://test-b-fat.pingan.com.cn/branch/mkt/street/index.html';
+    backUrl = encodeURIComponent(backUrl);
+
+    // 拼接参数字段
+    let prams = origin ? `?weappNo=${appid}&thirdPartyAppId=70040&wpToken=${wpToken}&oauth=1&backUrl=${backUrl}` : `?weappNo=${appid}&thirdPartyAppId=70040&wpToken=${wpToken}&oauth=1&backUrl=${backUrl}`;
+
+    redirect_uri = `${redirect_uri}${prams}`;
+    redirect_uri = encodeURIComponent(redirect_uri);
+
+    let path = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect`;
+
+    console.log('path', path);
+    location.replace(path);
+
+
+
+
+    // console.log("请求地址： ", origin ? prdPath : testPath);
+    // location.replace(origin ? prdPath : testPath);
+
+    // console.log("授权回来的地址： ", location.href);
+    // urlTxt.innerHTML = "返回地址：" + location.href;
+
+    // getURIParams()
 
 }
 
-// https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx95415c456652ce73&redirect_uri=https://rsb.pingan.com.cn/brcp/mpp/cust/galaxy/mpcb/redirect?weappNo=wx95415c456652ce73&thirdPartyAppId=70040&wpToken=7hhsep0hvrd4vyjbg400qqb0ixlxubhv&oauth=1&backUrl=https%3A%2F%2Fahboa.github.io%2Fwebs%2Findex.html&response_type=code&scope=snsapi_userinfo&state=sig#wechat_redirect
 
+// 先判断微信环境
+if(isWx()){
+    // 当前页面的url中是否已有 openid，nickname 等参数，可用别的参数检查
+    // 如果没有就要去授权，否则说明已经授权了
+    if(getPram('openid') !== null || getPram('openid') !== '' || getPram('openid') !== 'undefined'){
+        // 已有参数或不为空值，说明已经授权了
+        // do something
 
+    }else{
+        // 否则参数为空或没有，说明没有授权
+        authorize();
+        return;
+    }
+} else {
+    alert("请使用微信打开");
+}
 
 
 </script>

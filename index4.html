@@ -117,7 +117,7 @@ let vm = new Vue({
             let that = this;
             if (window.DeviceOrientationEvent) {
                 console.log("支持陀螺仪 deviceorientation: ", window.DeviceOrientationEvent)
-                this.getGyroData();
+                this.gyroPrams();
             } else {
                 console.log("--不--支持陀螺仪 deviceorientation!");
             }
@@ -135,8 +135,8 @@ let vm = new Vue({
                     console.log('ios13+ 版本--ua: ', ua);
                     that.gyroTallVer();
                 } else {
-                    console.log('newGyro---ios13以下版本、安卓版本--ua：', ua);
-                    that.getGyroData();
+                    console.log('newGyro---安卓/ios12 以下版本--ua：', ua);
+                    that.gyroPrams();
                 }
             } else {
                 console.log('newGyro---你的浏览器---不---支持陀螺仪');
@@ -152,7 +152,7 @@ let vm = new Vue({
                 DeviceMotionEvent.requestPermission().then((res) => {
                     console.log("DeviceMotionEvent.requestPermission---response: ", res);
                     if (res == "granted") {
-                        that.getGyroData();
+                        that.gyroPrams();
                     }
                 }).catch((err) => {
                     console.error('DeviceMotionEvent.requestPermission---err: ', err);
@@ -163,7 +163,7 @@ let vm = new Vue({
         },
 
         // 监听到陀螺仪参数后的具体业务逻辑
-        getGyroData () {
+        gyroPrams () {
             let that = this;
             window.addEventListener('deviceorientation', function(e){
                 that.absolute= e.absolute;

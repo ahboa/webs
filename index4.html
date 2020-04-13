@@ -59,6 +59,42 @@ h3{
 
 }
 
+.maskWrap{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    background: rgba(0,0,0,.3);
+}
+.maskArea{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 5;
+    width: 6.9rem;
+    height: 3.5rem;
+    background: #fff;
+    transform: translate(-50%, -50%);
+    border-radius: .15rem;
+}
+.btnGyro{
+    height: .9rem;
+    width: 5rem;
+    background: rgb(68, 184, 68);
+    border: none;
+    color: #fff;
+    border-radius: .1rem;
+    outline: none;
+}
+.btnGyro:hover{
+    /* border: none; */
+}
+
 
 </style>
 </head>
@@ -74,6 +110,13 @@ h3{
         <li>设备在x轴(beta)上的旋转角度: {{beta}}</li>
         <li>设备在y轴(gamma)上的旋转角度: {{gamma}}</li>
     </ul>
+
+    
+    <div v-if="btnState" class="maskWrap">
+        <div class="maskArea">
+            <button class="btnGyro" @click="newGyro()">打开陀螺仪</button>
+        </div>
+    </div>
 
     <!-- <h3>当前屏幕方向：{{screenArrow}}</h3> -->
 </div>
@@ -96,6 +139,8 @@ h3{
 let vm = new Vue({
     el: '#app',
     data: {
+        btnState: false,
+
         absolute: '',
         alpha: '0',
         beta: '0',
@@ -133,6 +178,7 @@ let vm = new Vue({
                 // if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iPhone OS 13') > -1) {
                 if ( ua.indexOf('iPhone OS 13') > -1 ) {    // ios13版本
                     console.log('ios13+ 版本--ua: ', ua);
+                    that.btnState = false;
                     that.gyroTallVer();
                 } else {
                     console.log('newGyro---安卓/ios12 以下版本--ua：', ua);
@@ -211,12 +257,24 @@ let vm = new Vue({
         console.log('Entry——获取手机陀螺仪 页面');
 
         // this.getGyro();  
-        this.newGyro();
+        // this.newGyro();
 
         // this.howArrow();     // 判断横屏/竖屏
 
         // this.perConsole();   // 每隔一秒 console一次
 
+
+        let ua = navigator.userAgent;
+        if ( ua.indexOf('iPhone OS 13') > -1 ) {    // ios13版本
+            console.log('ios13+ 版本--ua: ', ua);
+            that.btnState = true;
+            
+        } else {
+            console.log('newGyro---安卓/ios12 以下版本--ua：', ua);
+            // that.btnState = false;
+            this.newGyro();
+
+        }
 
     },
     updated(){

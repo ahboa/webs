@@ -168,15 +168,15 @@ let vm = new Vue({
             // 新版兼容ios13
             // if (window.DeviceOrientationEvent) {
             if (window.DeviceOrientationEvent && window.DeviceOrientationEvent.requestPermission) {
-                console.log("NNN---支持陀螺仪 deviceorientation, 且有requestPermission回调：", window.DeviceOrientationEvent);
-                console.log("NNN---回调requestPermission: ", window.DeviceOrientationEvent.requestPermission);
+                console.log("New---支持陀螺仪 deviceorientation, 且有requestPermission回调：", window.DeviceOrientationEvent);
+                console.log("New---回调requestPermission: ", window.DeviceOrientationEvent.requestPermission);
 
                 window.DeviceOrientationEvent.requestPermission().then((state) => {
                     //在这里调用陀螺仪事件
-                    console.log("NNN---进入requestPermission回调：state:", state);
+                    console.log("New---进入requestPermission回调：state:", state);
 
                     window.addEventListener('deviceorientation', function(e){
-                        console.log("NNN---进入监听：", e);
+                        console.log("New---进入监听：", e);
 
                         that.absoluteN= e.absolute;
                         that.alphaN= parseInt(e.alpha);
@@ -190,24 +190,25 @@ let vm = new Vue({
                     });
 
                 }).catch((err)=> {
-                    console.log("NNN---进入err回调：err:", err);
+                    console.log("New---进入err回调：err:", err);
                 });
 
             } else {
-                console.log("NNN---不--支持陀螺仪 deviceorientation!");
+                console.log("New---不--支持陀螺仪 deviceorientation!");
             }
 
         },
 
         permission () {
-            if ( typeof( DeviceMotionEvent ) !== "undefined" && typeof( DeviceMotionEvent.requestPermission ) === "function" ) {
+            if ( typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
                 // (optional) Do something before API request prompt.
                 DeviceMotionEvent.requestPermission()
-                    .then( response => {
+                    .then(response => {
                     // (optional) Do something after API prompt dismissed.
-                    if ( response == "granted" ) {
-                        window.addEventListener( "devicemotion", (e) => {
+                    if (response == "granted") {
+                        window.addEventListener( "deviceorientation", (e) => {
                             // do something for 'e' here.
+                            console.log("ios13.3.1版本：", e);
                         })
                     }
                 })
@@ -216,6 +217,29 @@ let vm = new Vue({
                 console.log("不--支持陀螺仪  DeviceMotionEvent is not defined");
             }
         },
+
+        // permission() {
+        //     console.log(DeviceMotionEvent.requestPermission);
+
+        //     if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
+        //         // (optional) Do something before API request prompt.
+        //         // document.getElementById('log').innerText = 'Do something before API request prompt.';
+        //         DeviceMotionEvent.requestPermission()
+        //             .then(response => {
+        //                 document.getElementById('log').innerText = response;
+        //                 // (optional) Do something after API prompt dismissed.
+        //                 document.getElementById('log1').innerText = response;
+        //                 if (response == "granted") {
+        //                     window.addEventListener('deviceorientation', function (event) {
+        //                         document.getElementById('log').innerText = event.beta;
+        //                     });
+        //                 }
+        //             })
+        //             .catch(console.error);
+        //     } else {
+        //         console.log("DeviceMotionEvent is not defined");
+        //     }
+        // },
 
 
         // 每隔一定时间 console一次

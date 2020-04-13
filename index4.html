@@ -68,24 +68,12 @@ h3{
 
 <div id="app">
 
-    <!-- <ul>
+    <ul>
         <li>设备是否提供绝对定位(absolute)数据: {{absolute}}</li>
         <li>设备沿z轴(alpha)上的旋转角度: {{alpha}}</li>
         <li>设备在x轴(beta)上的旋转角度: {{beta}}</li>
         <li>设备在y轴(gamma)上的旋转角度: {{gamma}}</li>
     </ul>
-    <br />
-    <ul>
-        <li>N设备是否提供绝对定位(absolute)数据: {{absoluteN}}</li>
-        <li>N设备沿z轴(alpha)上的旋转角度: {{alphaN}}</li>
-        <li>N设备在x轴(beta)上的旋转角度: {{betaN}}</li>
-        <li>N设备在y轴(gamma)上的旋转角度: {{gammaN}}</li>
-    </ul> -->
-
-    <button @click="testGyro()">测试ios13版本陀螺仪</button>
-    <p>设备在x轴(beta)上的旋转角度: {{betaX}}</p>
-
-
 
     <!-- <h3>当前屏幕方向：{{screenArrow}}</h3> -->
 </div>
@@ -108,163 +96,89 @@ h3{
 let vm = new Vue({
     el: '#app',
     data: {
-        msg: "hello",
-        title: '测试 手机陀螺仪',
-
         absolute: '',
         alpha: '0',
         beta: '0',
-        gamma: '0',
-
-        absoluteN: '',
-        alphaN: '0',
-        betaN: '0',
-        gammaN: '0',
-
-        betaX: '0',
+        gamma: '0', 
 
         screenArrow: "",
 
     },
     watch: {
-        // msg : function(nval,oval){
-        //     console.log('nval', nval)
-        //     console.log('oval', oval)
-        // },
-        // alpha: function(newVal,oldVal){
-        //     console.log('new--alpha', newVal)
-        //     console.log('old--alpha', oldVal)
-        // }
+        
     },
     computed: {
-        // msg1: function() {
-        //     return 'computed: ' + this.msg
-        // },
-        // alpha: function() {
-        //     return 'computed: ' + this.alpha
-        // }
+        
     },
     methods: {
 
-        // 获取手机陀螺仪参数
+        // 获取手机陀螺仪参数  安卓 / ios12以下
         getGyro(){
             let that = this;
-            // 旧版 正常支持安卓 / ios12以下
             if (window.DeviceOrientationEvent) {
                 console.log("支持陀螺仪 deviceorientation: ", window.DeviceOrientationEvent)
-                window.addEventListener('deviceorientation', function(e){
-                    that.absolute= e.absolute;
-                    that.alpha= parseInt(e.alpha);
-                    that.beta= parseInt(e.beta);
-                    that.gamma= parseInt(e.gamma);
-
-                    // console.log('absolute：', that.absolute);
-                    // console.log('alpha：', that.alpha);
-                    // console.log('beta：', that.beta);
-                    // console.log('gamma：', that.gamma);
-                });
+                this.getGyroData();
             } else {
                 console.log("--不--支持陀螺仪 deviceorientation!");
             }
 
         },
 
-        getGyroNew(){
-            let that = this;
-
-            // 新版兼容ios13
-            // if (window.DeviceOrientationEvent) {
-            if (window.DeviceOrientationEvent && window.DeviceOrientationEvent.requestPermission) {
-                console.log("New---支持陀螺仪 deviceorientation, 且有requestPermission回调：", window.DeviceOrientationEvent);
-                console.log("New---回调requestPermission: ", window.DeviceOrientationEvent.requestPermission);
-
-                window.DeviceOrientationEvent.requestPermission().then((state) => {
-                    //在这里调用陀螺仪事件
-                    console.log("New---进入requestPermission回调：state:", state);
-
-                    window.addEventListener('deviceorientation', function(e){
-                        console.log("New---进入监听：", e);
-
-                        that.absoluteN= e.absolute;
-                        that.alphaN= parseInt(e.alpha);
-                        that.betaN= parseInt(e.beta);
-                        that.gammaN= parseInt(e.gamma);
-
-                        // console.log('absolute-N：', that.absoluteN);
-                        // console.log('alpha-N：', that.alphaN);
-                        // console.log('beta-N：', that.betaN);
-                        // console.log('gamma-N：', that.gammaN);
-                    });
-
-                }).catch((err)=> {
-                    console.log("New---进入err回调：err:", err);
-                });
-
+        // 新方法 获取手机陀螺仪参数 -- 兼容ios13+ 版本以上
+        newGyro () {
+            let that= this;
+            let ua = navigator.userAgent;
+            if (window.DeviceOrientationEvent) {
+                console.log('newGyro---你的浏览器支持陀螺仪--ua: ', ua);
+                // if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iPhone OS 13') > -1) {
+                if ( ua.indexOf('iPhone OS 13') > -1 ) {    // ios13版本
+                    console.log('ios13+ 版本--ua: ', ua);
+                    that.gyroTallVer();
+                } else {
+                    console.log('newGyro---ios13以下版本、安卓版本--ua：', ua);
+                    that.getGyroData();
+                }
             } else {
-                console.log("New---不--支持陀螺仪 deviceorientation!");
+                console.log('newGyro---你的浏览器---不---支持陀螺仪');
             }
 
         },
 
-        // permission () {
-        //     if ( typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
-        //         // (optional) Do something before API request prompt.
-        //         DeviceMotionEvent.requestPermission()
-        //             .then(response => {
-        //             // (optional) Do something after API prompt dismissed.
-        //             if (response == "granted") {
-        //                 window.addEventListener( "deviceorientation", (e) => {
-        //                     // do something for 'e' here.
-        //                     console.log("ios13.3.1版本：", e);
-        //                 })
-        //             }
-        //         })
-        //             .catch( console.error )
-        //     } else {
-        //         console.log("不--支持陀螺仪  DeviceMotionEvent is not defined");
-        //     }
-        // },
-
-        permission() {
+        // 兼容ios13+ 版本 陀螺仪事件
+        gyroTallVer () {
             let that = this;
             console.log("DeviceMotionEvent.requestPermission: ", DeviceMotionEvent.requestPermission);
-
             if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
-                // (optional) Do something before API request prompt.
-                // document.getElementById('log').innerText = 'Do something before API request prompt.';
-                DeviceMotionEvent.requestPermission()
-                    .then(response => {
-                        console.log("DeviceMotionEvent.requestPermission---response: ", response);
-
-                        // document.getElementById('log').innerText = response;
-                        // (optional) Do something after API prompt dismissed.
-                        // document.getElementById('log1').innerText = response;
-                        if (response == "granted") {
-                            window.addEventListener('deviceorientation', function (event) {
-                                // document.getElementById('log').innerText = event.beta;
-                                that.betaX = event.beta;
-                            });
-                        }
-                    })
-                    .catch(console.error);
+                DeviceMotionEvent.requestPermission().then((res) => {
+                    console.log("DeviceMotionEvent.requestPermission---response: ", res);
+                    if (res == "granted") {
+                        that.getGyroData();
+                    }
+                }).catch((err) => {
+                    console.error('DeviceMotionEvent.requestPermission---err: ', err);
+                });
             } else {
                 console.log("DeviceMotionEvent is not defined");
             }
         },
 
+        // 监听到陀螺仪参数后的具体业务逻辑
+        getGyroData () {
+            let that = this;
+            window.addEventListener('deviceorientation', function(e){
+                that.absolute= e.absolute;
+                that.alpha = parseInt(e.alpha);
+                that.beta = parseInt(e.beta);
+                that.gamma = parseInt(e.gamma);
 
-        // 每隔一定时间 console一次
-        perConsole(){
-            for (let i = 0; i <=5 ; i++) {
-                (()=>{
-                    setTimeout(function () {
-                        console.log('i',i)
-                    }, 1000*i)
-                })()
-            }
+                // console.log('absolute：', that.absolute);
+                // console.log('alpha：', that.alpha);
+                // console.log('beta：', that.beta);
+                // console.log('gamma：', that.gamma);
+            });
         },
 
-
+        
         // 判断横屏/竖屏
         howArrow(){
             let that = this;
@@ -280,45 +194,28 @@ let vm = new Vue({
             window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", arrow, false);
         },
 
-
-
-        // 测试ios13 陀螺仪
-        testGyro () {
-            let that= this;
-            if (window.DeviceOrientationEvent) {
-                console.log('testGyro---你的浏览器支持陀螺仪');
-                console.log('navigator.userAgent: ', navigator.userAgent);
-
-                if (navigator.userAgent.indexOf('MicroMessenger/7.0.12') > -1 && navigator.userAgent.indexOf('iPhone OS 13') > -1) {
-                    console.log('ios13+ 版本--navigator.userAgent: ', navigator.userAgent);
-                    that.permission();
-                } else {
-                    window.addEventListener('deviceorientation', function (event) {
-                        // document.getElementById('log').innerText = event.beta;
-                        console.log('testGyro---ios13以下版本、安卓版本--navigator.userAgent：', navigator.userAgent);
-                    });
-                }
-            } else {
-                // document.getElementById('log').innerText = '你的浏览器不支持陀螺仪';
-                console.log('testGyro---你的浏览器---不---支持陀螺仪');
+        // 每隔一秒 console一次
+        perConsole(){
+            for (let i = 0; i <=5 ; i++) {
+                (()=>{
+                    setTimeout(function () {
+                        console.log('i',i)
+                    }, 1000*i)
+                })()
             }
-
         },
 
 
     },
     mounted(){
-        console.log('entry————page');
+        console.log('Entry——获取手机陀螺仪 页面');
 
-        // this.getGyro();
+        // this.getGyro();  
+        this.newGyro();
 
-        // this.getGyroNew();
+        // this.howArrow();     // 判断横屏/竖屏
 
-        // this.perConsole();
-
-        // this.howArrow();
-
-
+        // this.perConsole();   // 每隔一秒 console一次
 
 
     },
@@ -332,9 +229,7 @@ let vm = new Vue({
 
 
 
-
-
-// 原生js
+// 原生js 监听陀螺仪参数
 // let oUl = document.getElementById("mobBox");
 // let oLi = oUl.getElementsByTagName("li")
 
@@ -349,33 +244,6 @@ let vm = new Vue({
 //     oLi[2].innerHTML = '设备在x轴(beta)上的旋转角度：' + parseInt(e.beta);
 //     oLi[3].innerHTML = '设备在y轴(gamma)上的旋转角度：' + parseInt(e.gamma);
 // });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -407,11 +275,9 @@ function getPram(pramName) {
 
 
 
-
-
 </script>
-
 <script type="text/javascript">
+
 
 // 获取URL中某个参数
 function getParams(sName) {

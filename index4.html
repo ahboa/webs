@@ -68,7 +68,7 @@ h3{
 
 <div id="app">
 
-    <ul>
+    <!-- <ul>
         <li>设备是否提供绝对定位(absolute)数据: {{absolute}}</li>
         <li>设备沿z轴(alpha)上的旋转角度: {{alpha}}</li>
         <li>设备在x轴(beta)上的旋转角度: {{beta}}</li>
@@ -80,7 +80,12 @@ h3{
         <li>N设备沿z轴(alpha)上的旋转角度: {{alphaN}}</li>
         <li>N设备在x轴(beta)上的旋转角度: {{betaN}}</li>
         <li>N设备在y轴(gamma)上的旋转角度: {{gammaN}}</li>
-    </ul>
+    </ul> -->
+
+    <button @click="testGyro()">测试ios13版本陀螺仪</button>
+    <p>设备在x轴(beta)上的旋转角度: {{betaX}}</p>
+
+
 
     <!-- <h3>当前屏幕方向：{{screenArrow}}</h3> -->
 </div>
@@ -115,6 +120,8 @@ let vm = new Vue({
         alphaN: '0',
         betaN: '0',
         gammaN: '0',
+
+        betaX: '0',
 
         screenArrow: "",
 
@@ -199,47 +206,50 @@ let vm = new Vue({
 
         },
 
-        permission () {
-            if ( typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
-                // (optional) Do something before API request prompt.
-                DeviceMotionEvent.requestPermission()
-                    .then(response => {
-                    // (optional) Do something after API prompt dismissed.
-                    if (response == "granted") {
-                        window.addEventListener( "deviceorientation", (e) => {
-                            // do something for 'e' here.
-                            console.log("ios13.3.1版本：", e);
-                        })
-                    }
-                })
-                    .catch( console.error )
-            } else {
-                console.log("不--支持陀螺仪  DeviceMotionEvent is not defined");
-            }
-        },
-
-        // permission() {
-        //     console.log(DeviceMotionEvent.requestPermission);
-
-        //     if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
+        // permission () {
+        //     if ( typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
         //         // (optional) Do something before API request prompt.
-        //         // document.getElementById('log').innerText = 'Do something before API request prompt.';
         //         DeviceMotionEvent.requestPermission()
         //             .then(response => {
-        //                 document.getElementById('log').innerText = response;
-        //                 // (optional) Do something after API prompt dismissed.
-        //                 document.getElementById('log1').innerText = response;
-        //                 if (response == "granted") {
-        //                     window.addEventListener('deviceorientation', function (event) {
-        //                         document.getElementById('log').innerText = event.beta;
-        //                     });
-        //                 }
-        //             })
-        //             .catch(console.error);
+        //             // (optional) Do something after API prompt dismissed.
+        //             if (response == "granted") {
+        //                 window.addEventListener( "deviceorientation", (e) => {
+        //                     // do something for 'e' here.
+        //                     console.log("ios13.3.1版本：", e);
+        //                 })
+        //             }
+        //         })
+        //             .catch( console.error )
         //     } else {
-        //         console.log("DeviceMotionEvent is not defined");
+        //         console.log("不--支持陀螺仪  DeviceMotionEvent is not defined");
         //     }
         // },
+
+        permission() {
+            console.log("DeviceMotionEvent.requestPermission: ", DeviceMotionEvent.requestPermission);
+
+            if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
+                // (optional) Do something before API request prompt.
+                // document.getElementById('log').innerText = 'Do something before API request prompt.';
+                DeviceMotionEvent.requestPermission()
+                    .then(response => {
+                        console.log("DeviceMotionEvent.requestPermission---response: ", response);
+
+                        // document.getElementById('log').innerText = response;
+                        // (optional) Do something after API prompt dismissed.
+                        // document.getElementById('log1').innerText = response;
+                        if (response == "granted") {
+                            window.addEventListener('deviceorientation', function (event) {
+                                // document.getElementById('log').innerText = event.beta;
+                                that.betaX = event.beta;
+                            });
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                console.log("DeviceMotionEvent is not defined");
+            }
+        },
 
 
         // 每隔一定时间 console一次
@@ -270,13 +280,38 @@ let vm = new Vue({
         },
 
 
+
+        // 测试ios13 陀螺仪
+        testGyro () {
+            let that= this;
+            if (window.DeviceOrientationEvent) {
+                console.log('testGyro---你的浏览器支持陀螺仪');
+                console.log('navigator.userAgent: ', navigator.userAgent);
+
+                if (navigator.userAgent.indexOf('MicroMessenger/7.0.12') > -1 && navigator.userAgent.indexOf('iPhone OS 13') > -1) {
+                    console.log('ios13+ 版本--navigator.userAgent: ', navigator.userAgent);
+                    that.permission();
+                } else {
+                    window.addEventListener('deviceorientation', function (event) {
+                        // document.getElementById('log').innerText = event.beta;
+                        console.log('testGyro---ios13以下版本、安卓版本--navigator.userAgent：', navigator.userAgent);
+                    });
+                }
+            } else {
+                // document.getElementById('log').innerText = '你的浏览器不支持陀螺仪';
+                console.log('testGyro---你的浏览器---不---支持陀螺仪');
+            }
+
+        },
+
+
     },
     mounted(){
         console.log('entry————page');
 
-        this.getGyro();
+        // this.getGyro();
 
-        this.getGyroNew();
+        // this.getGyroNew();
 
         // this.perConsole();
 

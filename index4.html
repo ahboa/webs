@@ -226,6 +226,7 @@ let vm = new Vue({
         // },
 
         permission() {
+            let that = this;
             console.log("DeviceMotionEvent.requestPermission: ", DeviceMotionEvent.requestPermission);
 
             if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {

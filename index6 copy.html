@@ -1,0 +1,33 @@
+<html>
+
+<head>
+    <style>
+        canvas {
+            border: 1px red solid;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        var canvas = document.getElementById("canvas");
+        canvas.width = 300;
+        canvas.height = 200;
+        var context = canvas.getContext("2d");
+
+        // Canvas居中写字，参数（context对象，要写的字，字体，颜色，绘制的高度）
+        function canvas_text(ctx, txt, _fontSzie, _color, _height) {
+            ctx.font = _fontSzie;
+            ctx.fillStyle = _color;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(_text, canvas.width / 2, _height);
+        }
+
+        // 绘制中文字示例，参数（context对象，要写的字，字体，颜色，绘制的高度）
+        canvas_text(context, "要写的文字", "18px bold 黑体", "#000", 100);
+    </script>
+</body>
+
+</html>

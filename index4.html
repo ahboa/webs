@@ -179,7 +179,7 @@ let vm = new Vue({
                 // if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iphone os 13') > -1) {
                 if ( tallIos13() && that.wxVer('7.0.12') ) {    // ios13版本 / 微信7.0.12或以上版本
                     console.log('newGyro---ios13+ 版本&微信7.0.12或以上版本');
-                    that.btnState = false;
+                    // that.btnState = false;
                     that.gyroTallVer();
                 } else {
                     console.log('newGyro---安卓/ios12 以下版本，或ios13+ 版本&微信7.0.12 以下');
@@ -197,12 +197,22 @@ let vm = new Vue({
             console.log("DeviceMotionEvent.requestPermission: ", DeviceMotionEvent.requestPermission);
             if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
                 DeviceMotionEvent.requestPermission().then((res) => {
+                    console.log("这是--非--首次申请 陀螺仪权限！");
+                    that.btnState = false;
+
                     console.log("DeviceMotionEvent.requestPermission---response: ", res);
                     if (res == "granted") {
+                        console.log("ios13+ 授权陀螺仪 ok！");
                         that.gyroPrams();
+                    } else if (res == "denied") {
+                        console.log("ios13+ 授权取消！");
+                    } else {
+                        console.log("ios13+ 授权其它状态！");
                     }
                 }).catch((err) => {
+                    console.log("这是首次申请 陀螺仪权限！需要引导用户触发 打开陀螺仪权限！");
                     console.error('DeviceMotionEvent.requestPermission---err: ', err);
+                    that.btnState = true;
                 });
             } else {
                 console.log("DeviceMotionEvent is not defined", '你的系统或微信版本不支持陀螺仪');
@@ -279,23 +289,23 @@ let vm = new Vue({
         console.log('Entry——获取手机陀螺仪 页面');
 
         // this.getGyro();  
-        // this.newGyro();
+        this.newGyro();
 
         // this.howArrow();     // 判断横屏/竖屏
 
         // this.perConsole();   // 每隔一秒 console一次
 
 
-        let ua = navigator.userAgent.toLowerCase();
-        if ( tallIos13() && this.wxVer('7.0.12') ) {    // ios13版本
-            console.log('Entry——ios13+ 版本&微信7.0.12+ 版本 --ua: ', ua);
-            this.btnState = true;
+        // let ua = navigator.userAgent.toLowerCase();
+        // if ( tallIos13() && this.wxVer('7.0.12') ) {    // ios13版本
+        //     console.log('Entry——ios13+ 版本&微信7.0.12+ 版本 --ua: ', ua);
+        //     this.btnState = true;
 
-        } else {
-            console.log('Entry——安卓/ios12 以下版本，或ios13+ 版本&微信7.0.12 以下版本 --ua：', ua);
-            this.newGyro();
+        // } else {
+        //     console.log('Entry——安卓/ios12 以下版本，或ios13+ 版本&微信7.0.12 以下版本 --ua：', ua);
+        //     this.newGyro();
 
-        }
+        // }
 
 
     },

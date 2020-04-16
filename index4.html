@@ -177,7 +177,7 @@ let vm = new Vue({
                 console.log('newGyro---你的浏览器支持陀螺仪');
                 
                 // if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iphone os 13') > -1) {
-                if ( tallIos13() && that.wxVer('7.0.12') ) {    // ios13版本 / 微信7.0.12或以上版本
+                if ( tallIos13() && that.wxVer() ) {    // ios13版本 / 微信7.0.12或以上版本
                     console.log('newGyro---ios13+ 版本&微信7.0.12或以上版本');
                     // that.btnState = false;
                     that.gyroTallVer();
@@ -238,11 +238,11 @@ let vm = new Vue({
 
         // 微信版本号是否大于或等于对比版本号
         // -1表示v1<v2, 0表示v1=v2, 1表示v1>v2
-        wxVer (baseVer) {
+        wxVer () {
             let ua = navigator.userAgent.toLowerCase();
             let wxVer = ua.split('micromessenger/')[1].split('(')[0];
             console.log('微信版本号', wxVer);
-            let ver = compareVersion(baseVer, wxVer);
+            let ver = compareVersion('7.0.12', wxVer);
             console.log('版本对比结果：', ver);
             if (ver == -1) {
                 console.log('当前版本' + wxVer + ' > 对比版本7.0.12 ：', ver);
@@ -255,6 +255,7 @@ let vm = new Vue({
                 return false;
             }
         },
+        
 
         
         // 判断横屏/竖屏
@@ -297,7 +298,7 @@ let vm = new Vue({
 
 
         // let ua = navigator.userAgent.toLowerCase();
-        // if ( tallIos13() && this.wxVer('7.0.12') ) {    // ios13版本
+        // if ( tallIos13() && this.wxVer() ) {    // ios13版本
         //     console.log('Entry——ios13+ 版本&微信7.0.12+ 版本 --ua: ', ua);
         //     this.btnState = true;
 

@@ -174,15 +174,15 @@ let vm = new Vue({
             let that= this;
             // let ua = navigator.userAgent.toLowerCase();
             if (window.DeviceOrientationEvent) {
-                console.log('newGyro---你的浏览器支持陀螺仪--ua: ', );
+                console.log('newGyro---你的浏览器支持陀螺仪');
                 
                 // if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iphone os 13') > -1) {
                 if ( tallIos13() && that.wxVer('7.0.12') ) {    // ios13版本 / 微信7.0.12或以上版本
-                    console.log('newGyro---ios13+ 版本&微信7.0.12或以上版本 --ua: ', );
+                    console.log('newGyro---ios13+ 版本&微信7.0.12或以上版本');
                     that.btnState = false;
                     that.gyroTallVer();
                 } else {
-                    console.log('newGyro---ios13+ 版本&微信7.0.12 以下，或安卓/ios12 以下版本 --ua：', );
+                    console.log('newGyro---安卓/ios12 以下版本，或ios13+ 版本&微信7.0.12 以下');
                     that.gyroPrams();
                 }
             } else {
@@ -205,8 +205,8 @@ let vm = new Vue({
                     console.error('DeviceMotionEvent.requestPermission---err: ', err);
                 });
             } else {
-                console.log("DeviceMotionEvent is not defined");
-                
+                console.log("DeviceMotionEvent is not defined", '你的系统或微信版本不支持陀螺仪');
+
             }
         },
 
@@ -292,7 +292,7 @@ let vm = new Vue({
             this.btnState = true;
 
         } else {
-            console.log('Entry——ios13+ 版本&微信7.0.12 以下版本，或安卓/ios12 以下版本 --ua：', ua);
+            console.log('Entry——安卓/ios12 以下版本，或ios13+ 版本&微信7.0.12 以下版本 --ua：', ua);
             this.newGyro();
 
         }

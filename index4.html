@@ -172,11 +172,18 @@ let vm = new Vue({
         // 新方法 获取手机陀螺仪参数 -- 兼容ios13+ 版本以上
         newGyro () {
             let that= this;
-            let ua = navigator.userAgent;
+            let ua = navigator.userAgent.toLowerCase();
             if (window.DeviceOrientationEvent) {
                 console.log('newGyro---你的浏览器支持陀螺仪--ua: ', ua);
-                // if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iPhone OS 13') > -1) {
-                if ( ua.indexOf('iPhone OS 13') > -1 ) {    // ios13版本
+
+                // let ua = navigator.userAgent.toLowerCase();
+                // let wxVer = ua.split('micromessenger/')[1].split('(')[0];
+                // console.log('微信版本号', wxVer);
+
+                // let ver = compareVersion('7.0.12', wxVer);
+                
+                if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iphone os 13') > -1) {
+                // if ( ua.indexOf('iphone os 13') > -1 ) {    // ios13版本
                     console.log('ios13+ 版本--ua: ', ua);
                     that.btnState = false;
                     that.gyroTallVer();
@@ -279,6 +286,7 @@ let vm = new Vue({
         if (ua.indexOf('micromessenger') >-1) {
             console.log('微信环境！');
 
+            let ua = navigator.userAgent.toLowerCase();
             let wxVer = ua.split('micromessenger/')[1].split('(')[0];
             console.log('微信版本号', wxVer);
 
@@ -292,6 +300,8 @@ let vm = new Vue({
             }
 
         }
+
+        tallIos13()
         
 
     },
@@ -323,6 +333,26 @@ let vm = new Vue({
 
 
 
+
+// 是否ios13+ 系统版本
+function tallIos13() {
+    let ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('iphone os') > -1) {
+        let verNum = ua.split('iphone os ');
+        console.log('verNum: ', verNum);
+        verNum = verNum[1].slice(0, 2);
+        if(verNum >= 13) {
+            console.log('当前ios 版本 13+以上 ：', verNum);
+            return true;
+        } else {
+            console.log('当前ios 版本 12-以下 ：', verNum);
+            return false;
+        }
+    } else {
+        console.log('非iphone OS 系统！');
+        return false;
+    }
+}
 
 // 比较版本号 -1表示v1<v2, 0表示v1=v2, 1表示v1>v2
 function compareVersion(v1, v2) {

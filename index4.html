@@ -175,8 +175,8 @@ let vm = new Vue({
             let ua = navigator.userAgent;
             if (window.DeviceOrientationEvent) {
                 console.log('newGyro---你的浏览器支持陀螺仪--ua: ', ua);
-                if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iPhone OS 13') > -1) {
-                // if ( ua.indexOf('iPhone OS 13') > -1 ) {    // ios13版本
+                // if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iPhone OS 13') > -1) {
+                if ( ua.indexOf('iPhone OS 13') > -1 ) {    // ios13版本
                     console.log('ios13+ 版本--ua: ', ua);
                     that.btnState = false;
                     that.gyroTallVer();

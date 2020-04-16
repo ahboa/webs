@@ -178,10 +178,23 @@ let vm = new Vue({
                 
                 // if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iphone os 13') > -1) {
                 if ( tallIos13() && that.wxVer() ) {    // ios13版本 / 微信7.0.12或以上版本
+
+                // 比较版本号 -1表示v1<v2, 0表示v1=v2, 1表示v1>v2
+                // let v1 = compareVersion('7.0.12', that.wxVer() );
+                // console.log("v--666--: ", v1);
+                
+                // if ( tallIos13() && (compareVersion('7.0.12', that.wxVer()) == 0 || compareVersion('7.0.12', that.wxVer() ) == -1 ) ) {    // ios13版本 / 微信7.0.12或以上版本
                     console.log('newGyro---ios13+ 版本&微信7.0.12或以上版本');
                     // that.btnState = false;
                     that.gyroTallVer();
-                } else {
+                }
+                // else if (tallIos13() && (compareVersion('7.0.12', that.wxVer()) == 1 && compareVersion('7.0.9', that.wxVer() ) == -1 )) {
+                //     console.log('newGyro---ios13+ 版本&微信7.0.11以下 ~ 7.0.9以上版本');
+                // }
+                // else if ( tallIos13() && (compareVersion('7.0.8', that.wxVer()) == 0 || compareVersion('7.0.9', that.wxVer() ) == 1 ) ){
+                //     console.log('newGyro---ios13+ 版本&微信7.0.8或以下版本');
+                // }
+                else {
                     console.log('newGyro---安卓/ios12 以下版本，或ios13+ 版本&微信7.0.12 以下');
                     that.gyroPrams();
                 }
@@ -242,18 +255,20 @@ let vm = new Vue({
             let ua = navigator.userAgent.toLowerCase();
             let wxVer = ua.split('micromessenger/')[1].split('(')[0];
             console.log('微信版本号', wxVer);
-            let ver = compareVersion('7.0.12', wxVer);
-            console.log('版本对比结果：', ver);
-            if (ver == -1) {
-                console.log('当前版本' + wxVer + ' > 对比版本7.0.12 ：', ver);
-                return true;
-            } else if (ver == 0) {
-                console.log('当前版本' + wxVer + ' = 对比版本7.0.12 ：', ver);
-                return true;
-            } else if (ver == 1) {
-                console.log('当前版本' + wxVer + ' < 对比版本7.0.12 ：', ver);
-                return false;
-            }
+
+            return wxVer;
+            // let ver = compareVersion('7.0.12', wxVer);
+            // console.log('版本对比结果：', ver);
+            // if (ver == -1) {
+            //     console.log('当前版本' + wxVer + ' > 对比版本7.0.12 ：', ver);
+            //     return true;
+            // } else if (ver == 0) {
+            //     console.log('当前版本' + wxVer + ' = 对比版本7.0.12 ：', ver);
+            //     return true;
+            // } else if (ver == 1) {
+            //     console.log('当前版本' + wxVer + ' < 对比版本7.0.12 ：', ver);
+            //     return false;
+            // }
         },
         
 
@@ -297,7 +312,8 @@ let vm = new Vue({
         // this.perConsole();   // 每隔一秒 console一次
 
 
-        // let ua = navigator.userAgent.toLowerCase();
+        let ua = navigator.userAgent.toLowerCase();
+        console.log('Entry—— --ua: ', ua);
         // if ( tallIos13() && this.wxVer() ) {    // ios13版本
         //     console.log('Entry——ios13+ 版本&微信7.0.12+ 版本 --ua: ', ua);
         //     this.btnState = true;
@@ -307,6 +323,14 @@ let vm = new Vue({
         //     this.newGyro();
 
         // }
+
+
+        // 比较版本号 -1表示v1<v2, 0表示v1=v2, 1表示v1>v2
+        let v1 = compareVersion('7.0.12', '7.0.12.0');
+        console.log("v--: ", v1);
+
+        let v2 = compareVersion('7.0.8', '7.0.7');
+        console.log("v--: ", v2);
 
 
     },

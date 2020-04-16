@@ -172,23 +172,17 @@ let vm = new Vue({
         // 新方法 获取手机陀螺仪参数 -- 兼容ios13+ 版本以上
         newGyro () {
             let that= this;
-            let ua = navigator.userAgent.toLowerCase();
+            // let ua = navigator.userAgent.toLowerCase();
             if (window.DeviceOrientationEvent) {
-                console.log('newGyro---你的浏览器支持陀螺仪--ua: ', ua);
-
-                // let ua = navigator.userAgent.toLowerCase();
-                // let wxVer = ua.split('micromessenger/')[1].split('(')[0];
-                // console.log('微信版本号', wxVer);
-
-                // let ver = compareVersion('7.0.12', wxVer);
+                console.log('newGyro---你的浏览器支持陀螺仪--ua: ', );
                 
-                if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iphone os 13') > -1) {
-                // if ( ua.indexOf('iphone os 13') > -1 ) {    // ios13版本
-                    console.log('ios13+ 版本--ua: ', ua);
+                // if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iphone os 13') > -1) {
+                if ( tallIos13() && that.wxVer('7.0.12') ) {    // ios13版本 / 微信7.0.12或以上版本
+                    console.log('newGyro---ios13+ 版本&微信7.0.12或以上版本 --ua: ', );
                     that.btnState = false;
                     that.gyroTallVer();
                 } else {
-                    console.log('newGyro---安卓/ios12 以下版本--ua：', ua);
+                    console.log('newGyro---ios13+ 版本&微信7.0.12 以下，或安卓/ios12 以下版本 --ua：', );
                     that.gyroPrams();
                 }
             } else {
@@ -212,6 +206,7 @@ let vm = new Vue({
                 });
             } else {
                 console.log("DeviceMotionEvent is not defined");
+                
             }
         },
 
@@ -229,6 +224,26 @@ let vm = new Vue({
                 // console.log('beta：', that.beta);
                 // console.log('gamma：', that.gamma);
             });
+        },
+
+        // 微信版本号是否大于或等于对比版本号
+        // -1表示v1<v2, 0表示v1=v2, 1表示v1>v2
+        wxVer (baseVer) {
+            let ua = navigator.userAgent.toLowerCase();
+            let wxVer = ua.split('micromessenger/')[1].split('(')[0];
+            console.log('微信版本号', wxVer);
+            let ver = compareVersion(baseVer, wxVer);
+            console.log('版本对比结果：', ver);
+            if (ver == -1) {
+                console.log('当前版本' + wxVer + ' > 对比版本7.0.12 ：', ver);
+                return true;
+            } else if (ver == 0) {
+                console.log('当前版本' + wxVer + ' = 对比版本7.0.12 ：', ver);
+                return true;
+            } else if (ver == 1) {
+                console.log('当前版本' + wxVer + ' < 对比版本7.0.12 ：', ver);
+                return false;
+            }
         },
 
         
@@ -272,37 +287,16 @@ let vm = new Vue({
 
 
         let ua = navigator.userAgent.toLowerCase();
-        if ( ua.indexOf('iphone os 13') > -1 ) {    // ios13版本
-            console.log('Entry——ios13+ 版本--ua: ', ua);
+        if ( tallIos13() && this.wxVer('7.0.12') ) {    // ios13版本
+            console.log('Entry——ios13+ 版本&微信7.0.12+ 版本 --ua: ', ua);
             this.btnState = true;
 
         } else {
-            console.log('Entry——newGyro---安卓/ios12 以下版本--ua：', ua);
-            // this.btnState = false;
+            console.log('Entry——ios13+ 版本&微信7.0.12 以下版本，或安卓/ios12 以下版本 --ua：', ua);
             this.newGyro();
 
         }
 
-        if (ua.indexOf('micromessenger') >-1) {
-            console.log('微信环境！');
-
-            let ua = navigator.userAgent.toLowerCase();
-            let wxVer = ua.split('micromessenger/')[1].split('(')[0];
-            console.log('微信版本号', wxVer);
-
-            let ver = compareVersion('7.0.12', wxVer);
-            if (ver == -1) {
-                console.log('当前版本' + wxVer + ' > 对比版本7.0.12 ：', ver);
-            } else if (ver == 0) {
-                console.log('当前版本' + wxVer + ' = 对比版本7.0.12 ：', ver);
-            } else if (ver == 1) {
-                console.log('当前版本' + wxVer + ' < 对比版本7.0.12 ：', ver);
-            }
-
-        }
-
-        tallIos13()
-        
 
     },
     updated(){
@@ -339,7 +333,7 @@ function tallIos13() {
     let ua = navigator.userAgent.toLowerCase();
     if (ua.indexOf('iphone os') > -1) {
         let verNum = ua.split('iphone os ');
-        console.log('verNum: ', verNum);
+        // console.log('verNum: ', verNum);
         verNum = verNum[1].slice(0, 2);
         if(verNum >= 13) {
             console.log('当前ios 版本 13+以上 ：', verNum);

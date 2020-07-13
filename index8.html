@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>动态加载js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+    <!-- <script src="js/axios.min.js"></script>
+    <script src="js/vconsole.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/vue.js"></script>
+    <script type="text/javascript">
+        var vConsole = new VConsole();
+        document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + "px";
+        window.onresize = function () {
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + "px";
+        };
+    </script> -->
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-size: .3rem;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <div id="app">
+        <h2>测试 地理位置</h2>
+
+
+    </div>
+
+    <script type="text/javascript">
+        // vue start
+        // let vm = new Vue({
+        //     el: '#app',
+        //     data: {
+
+
+        //     },
+        //     methods: {
+
+
+
+        //     },
+        //     mounted() {
+        //         console.log('Entry——进入页面');
+
+
+
+
+
+        //     }
+        // })
+        // vue end
+
+
+        // 定义动态加载js的方法，以数组的形式加载多个js文件
+        function dynLoadJs(urlArr, callback) {
+            console.log('需要动态加载的js文件列表：', urlArr);
+            var cb = callback || function () {}; // 加载完成后回调方法
+            for (var i = 0, len = urlArr.length; i < len; i++) { // 遍历需要加载的列表
+                var sp = document.createElement("script"); // 动态创建 script 标签
+                sp.type = 'text/javascript'; // 设置 script 的ype类型
+                if (i == len - 1) { // 判断最后一个文件
+                    if (sp.readyState) { // IE 
+                        sp.onreadystatechange = function () { // IE 加载完成
+                            if (sp.readyState == 'loaded' || sp.readyState == 'complete') {
+                                sp.onreadystatechange = null;
+                                console.warn('IE 动态加载最后一个文件完成！');
+                                cb(); // 执行回调
+                            }
+                        };
+                    } else { //其他浏览器
+                        sp.onload = function () { // 加载完成
+                            console.warn('非IE 动态加载最后一个文件完成！');
+                            cb(); // 执行回调
+                        };
+                    }
+                }
+                sp.src = urlArr[i]; // 设置 script 的src属性
+                console.log(sp);
+                document.getElementsByTagName('head')[0].appendChild(sp); // 把 script 标签 插入head头部
+            }
+        }
+
+
+        // 使用方法
+        dynLoadJs(['js/vue.js', 'js/axios.min.js', 'js/vconsole.min.js', 'js/jquery.js'], function () {
+            console.log('动态加载js完成，开始执行回调');
+            
+            // 执行加载完成逻辑
+            var vConsole = new VConsole(); 
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + "px";
+            window.onresize = function () {
+                document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + "px";
+            };
+
+
+
+        });
+    </script>
+</body>
+
+</html>

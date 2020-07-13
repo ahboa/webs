@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>h5 获取地理位置信息（定位）</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<script src="js/axios.min.js"></script>
+<script src="js/vconsole.min.js"></script>
+<script src="js/jquery.js"></script>
+<script src="js/vue.js"></script>
+<script type="text/javascript">
+    var vConsole = new VConsole();
+    document.documentElement.style.fontSize=document.documentElement.clientWidth/7.5+"px";window.onresize=function(){document.documentElement.style.fontSize=document.documentElement.clientWidth/7.5+"px";};
+</script>
+<style type="text/css">
+
+*{margin: 0;padding: 0;}
+
+body{
+    font-size: .3rem;
+}
+
+h2{
+    height: .8rem;
+    line-height: .8rem;
+    margin: .5rem 0 .3rem 0;
+    font-size: .45rem;
+    text-align: center;
+}
+h3{
+    line-height: .7rem;
+    text-align: center;
+}
+
+ul{
+    width: 80%;
+    margin: 0 auto;
+    border: .01rem solid #ccc;
+    border-bottom: none;
+}
+
+li{
+    box-sizing: border-box;
+    list-style: none;
+    line-height: .7rem;
+    padding: 0 .3rem;
+    border-bottom: .01rem solid #ccc;
+}
+
+#app{
+    margin-bottom: .5rem;
+}
+
+h3{
+    line-height: .9rem;
+    padding: .5rem;
+    font-size: .38rem;
+    text-align: center;
+
+}
+
+.maskWrap{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3;
+    background: rgba(0,0,0,.3);
+}
+.maskArea{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 5;
+    width: 6.9rem;
+    height: 3.5rem;
+    background: #fff;
+    transform: translate(-50%, -50%);
+    border-radius: .15rem;
+}
+.btnGyro{
+    height: .9rem;
+    width: 5rem;
+    background: rgb(68, 184, 68);
+    border: none;
+    color: #fff;
+    border-radius: .1rem;
+    outline: none;
+}
+.btnGyro:hover{
+    /* border: none; */
+}
+
+
+</style>
+</head>
+<body>
+
+<h2>测试 手机陀螺仪</h2>
+
+<div id="app">
+
+    <ul>
+        <li>设备是否提供绝对定位(absolute)数据: {{absolute}}</li>
+        <li>设备沿z轴(alpha)上的旋转角度: {{alpha}}</li>
+        <li>设备在x轴(beta)上的旋转角度: {{beta}}</li>
+        <li>设备在y轴(gamma)上的旋转角度: {{gamma}}</li>
+    </ul>
+
+    
+    <div v-if="btnState" class="maskWrap">
+        <div class="maskArea">
+            <button class="btnGyro" @click="newGyro()">打开陀螺仪</button>
+        </div>
+    </div>
+
+    <!-- <h3>当前屏幕方向：{{screenArrow}}</h3> -->
+</div>
+
+
+<!-- 原生js 赋值 -->
+<!-- <h3>直接显示数据</h3>
+<ul id="mobBox">
+    <li>设备是否提供绝对定位数据：</li>
+    <li>设备沿z轴上的旋转角度：</li>
+    <li>设备在x轴上的旋转角度：</li>
+    <li>设备在y轴上的旋转角度：</li>
+</ul> -->
+
+
+
+<script type="text/javascript">
+
+// vue start
+let vm = new Vue({
+    el: '#app',
+    data: {
+        btnState: false,
+
+        absolute: '',
+        alpha: '0',
+        beta: '0',
+        gamma: '0', 
+
+        screenArrow: "",
+
+    },
+    watch: {
+        
+    },
+    computed: {
+        
+    },
+    methods: {
+
+        // 获取手机陀螺仪参数  安卓 / ios12以下
+        getGyro(){
+            let that = this;
+            if (window.DeviceOrientationEvent) {
+                console.log("支持陀螺仪 deviceorientation: ", window.DeviceOrientationEvent)
+                this.gyroPrams();
+            } else {
+                console.log("--不--支持陀螺仪 deviceorientation!");
+            }
+
+        },
+
+        // 新方法 获取手机陀螺仪参数 -- 兼容ios13+ 版本以上
+        newGyro () {
+            let that= this;
+            // let ua = navigator.userAgent.toLowerCase();
+            if (window.DeviceOrientationEvent) {
+                console.log('newGyro---你的浏览器支持陀螺仪');
+                
+                // if (ua.indexOf('MicroMessenger/7.0.12') > -1 && ua.indexOf('iphone os 13') > -1) {
+                if ( tallIos13() && that.wxVer() ) {    // ios13版本 / 微信7.0.12或以上版本
+
+                // 比较版本号 -1表示v1<v2, 0表示v1=v2, 1表示v1>v2
+                // let v1 = compareVersion('7.0.12', that.wxVer() );
+                // console.log("v--666--: ", v1);
+                
+                // if ( tallIos13() && (compareVersion('7.0.12', that.wxVer()) == 0 || compareVersion('7.0.12', that.wxVer() ) == -1 ) ) {    // ios13版本 / 微信7.0.12或以上版本
+                    console.log('newGyro---ios13+ 版本&微信7.0.12或以上版本');
+                    // that.btnState = false;
+                    that.gyroTallVer();
+                }
+                // else if (tallIos13() && (compareVersion('7.0.12', that.wxVer()) == 1 && compareVersion('7.0.9', that.wxVer() ) == -1 )) {
+                //     console.log('newGyro---ios13+ 版本&微信7.0.11以下 ~ 7.0.9以上版本');
+                // }
+                // else if ( tallIos13() && (compareVersion('7.0.8', that.wxVer()) == 0 || compareVersion('7.0.9', that.wxVer() ) == 1 ) ){
+                //     console.log('newGyro---ios13+ 版本&微信7.0.8或以下版本');
+                // }
+                else {
+                    console.log('newGyro---安卓/ios12 以下版本，或ios13+ 版本&微信7.0.12 以下');
+                    that.gyroPrams();
+                }
+            } else {
+                console.log('newGyro---你的浏览器---不---支持陀螺仪');
+            }
+
+        },
+
+        // 兼容ios13+ 版本 陀螺仪事件
+        gyroTallVer () {
+            let that = this;
+            console.log("DeviceMotionEvent.requestPermission: ", DeviceMotionEvent.requestPermission);
+            if (typeof (DeviceMotionEvent) !== "undefined" && typeof (DeviceMotionEvent.requestPermission) === "function") {
+                DeviceMotionEvent.requestPermission().then((res) => {
+                    console.log("这是--非--首次申请 陀螺仪权限！");
+                    that.btnState = false;
+
+                    console.log("DeviceMotionEvent.requestPermission---response: ", res);
+                    if (res == "granted") {
+                        console.log("ios13+ 授权陀螺仪 ok！");
+                        that.gyroPrams();
+                    } else if (res == "denied") {
+                        console.log("ios13+ 授权取消！");
+                    } else {
+                        console.log("ios13+ 授权其它状态！");
+                    }
+                }).catch((err) => {
+                    console.log("这是首次申请 陀螺仪权限！需要引导用户触发 打开陀螺仪权限！");
+                    console.error('DeviceMotionEvent.requestPermission---err: ', err);
+                    that.btnState = true;
+                });
+            } else {
+                console.log("DeviceMotionEvent is not defined", '你的系统或微信版本不支持陀螺仪');
+
+            }
+        },
+
+        // 监听到陀螺仪参数后的具体业务逻辑
+        gyroPrams () {
+            let that = this;
+            window.addEventListener('deviceorientation', function(e){
+                that.absolute= e.absolute;
+                that.alpha = parseInt(e.alpha);
+                that.beta = parseInt(e.beta);
+                that.gamma = parseInt(e.gamma);
+
+                // console.log('absolute：', that.absolute);
+                // console.log('alpha：', that.alpha);
+                // console.log('beta：', that.beta);
+                // console.log('gamma：', that.gamma);
+            });
+        },
+
+        // 微信版本号是否大于或等于对比版本号
+        // -1表示v1<v2, 0表示v1=v2, 1表示v1>v2
+        wxVer () {
+            let ua = navigator.userAgent.toLowerCase();
+            let wxVer = ua.split('micromessenger/')[1].split('(')[0];
+            console.log('微信版本号', wxVer);
+
+            return wxVer;
+            // let ver = compareVersion('7.0.12', wxVer);
+            // console.log('版本对比结果：', ver);
+            // if (ver == -1) {
+            //     console.log('当前版本' + wxVer + ' > 对比版本7.0.12 ：', ver);
+            //     return true;
+            // } else if (ver == 0) {
+            //     console.log('当前版本' + wxVer + ' = 对比版本7.0.12 ：', ver);
+            //     return true;
+            // } else if (ver == 1) {
+            //     console.log('当前版本' + wxVer + ' < 对比版本7.0.12 ：', ver);
+            //     return false;
+            // }
+        },
+        
+
+        
+        // 判断横屏/竖屏
+        howArrow(){
+            let that = this;
+            function arrow() {
+                if (window.orientation == 180 || window.orientation == 0) {
+                    that.screenArrow = '||| 竖屏 |||';
+                }
+                if (window.orientation == 90 || window.orientation == -90) {
+                    that.screenArrow = '--- 横屏 ---';
+                }
+            }
+            window.addEventListener("load", arrow, false);
+            window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", arrow, false);
+        },
+
+        // 每隔一秒 console一次
+        perConsole(){
+            for (let i = 0; i <=5 ; i++) {
+                (()=>{
+                    setTimeout(function () {
+                        console.log('i',i)
+                    }, 1000*i)
+                })()
+            }
+        },
+
+
+    },
+    mounted(){
+        console.log('Entry——获取手机陀螺仪 页面');
+
+        // this.getGyro();  
+        this.newGyro();
+
+        // this.howArrow();     // 判断横屏/竖屏
+
+        // this.perConsole();   // 每隔一秒 console一次
+
+
+        let ua = navigator.userAgent.toLowerCase();
+        console.log('Entry—— --ua: ', ua);
+        // if ( tallIos13() && this.wxVer() ) {    // ios13版本
+        //     console.log('Entry——ios13+ 版本&微信7.0.12+ 版本 --ua: ', ua);
+        //     this.btnState = true;
+
+        // } else {
+        //     console.log('Entry——安卓/ios12 以下版本，或ios13+ 版本&微信7.0.12 以下版本 --ua：', ua);
+        //     this.newGyro();
+
+        // }
+
+
+        // 比较版本号 -1表示v1<v2, 0表示v1=v2, 1表示v1>v2
+        let v1 = compareVersion('7.0.12', '7.0.12.0');
+        console.log("v--: ", v1);
+
+        let v2 = compareVersion('7.0.8', '7.0.7');
+        console.log("v--: ", v2);
+
+
+    },
+    updated(){
+
+    }
+})
+// vue end
+
+
+
+
+
+// 原生js 监听陀螺仪参数
+// let oUl = document.getElementById("mobBox");
+// let oLi = oUl.getElementsByTagName("li")
+
+// window.addEventListener('deviceorientation', function(e){
+//     console.log('deviceorientation: ' + e);
+//     console.log('absolute: ' + e.absolute);
+//     console.log('alpha: ' + e.alpha);
+//     console.log('beta: ' + e.beta);
+//     console.log('gamma: ' + e.gamma);
+//     oLi[0].innerHTML = '设备是否提供绝对定位(absolute)数据：' + e.absolute;
+//     oLi[1].innerHTML = '设备沿z轴(alpha)上的旋转角度：' + parseInt(e.alpha);
+//     oLi[2].innerHTML = '设备在x轴(beta)上的旋转角度：' + parseInt(e.beta);
+//     oLi[3].innerHTML = '设备在y轴(gamma)上的旋转角度：' + parseInt(e.gamma);
+// });
+
+
+
+
+// 是否ios13+ 系统版本
+function tallIos13() {
+    let ua = navigator.userAgent.toLowerCase();
+    if (ua.indexOf('iphone os') > -1) {
+        let verNum = ua.split('iphone os ');
+        // console.log('verNum: ', verNum);
+        verNum = verNum[1].slice(0, 2);
+        if(verNum >= 13) {
+            console.log('当前ios 版本 13+以上 ：', verNum);
+            return true;
+        } else {
+            console.log('当前ios 版本 12-以下 ：', verNum);
+            return false;
+        }
+    } else {
+        console.log('非iphone OS 系统！');
+        return false;
+    }
+}
+
+// 比较版本号 -1表示v1<v2, 0表示v1=v2, 1表示v1>v2
+function compareVersion(v1, v2) {
+    v1 = v1.split('.')
+    v2 = v2.split('.')
+    const len = Math.max(v1.length, v2.length)
+    while (v1.length < len) {
+        v1.push('0')
+    }
+    while (v2.length < len) {
+        v2.push('0')
+    }
+    for (let i = 0; i < len; i++) {
+        const num1 = parseInt(v1[i])
+        const num2 = parseInt(v2[i])
+        if (num1 > num2) {
+            return 1
+        } else if (num1 < num2) {
+            return -1
+        }
+    }
+    return 0
+}
+
+
+// 判断是否微信浏览器
+function isWx() {
+    var ua = navigator.userAgent.toLowerCase();
+    var result = (/micromessenger/.test(ua)) ? true : false;
+    if (result) {
+        console.log('你正在访问微信浏览器');
+    } else {
+        console.log('你访问的不是微信浏览器');
+    }
+    return result;
+}
+// isWx();
+
+// 获取URL的参数
+function getPram(pramName) {
+    var prams = window.location.search.substring(1);
+    var pramItem = prams.split("&");
+    for (var i=0;i<pramItem.length;i++) {
+           var pair = pramItem[i].split("=");
+           if(pair[0] == pramName){return pair[1];}
+    }
+    return(false);
+}
+
+
+
+</script>
+<script type="text/javascript">
+
+
+// 获取URL中某个参数
+function getParams(sName) {
+    let reg = new RegExp("(^|&)" + sName + "=([^&]*)(&|$)", "i");
+    let r = window.location.search.substr(1).match(reg);
+    if (r != null)
+        return decodeURIComponent(r[2]); // (r[2]);
+    return "";
+}
+
+//设置、获取cookie
+function Cookie(key, value, options) {
+    if (arguments.length > 1 && (!/Object/.test(Object.prototype.toString.call(value)) || value === null || value === undefined)) {
+        options = options || {};
+        if (value === null || value === undefined) {
+            options.expires = -1;
+        }
+        if (typeof options.expires === 'number') {
+            let days = options.expires,
+                t = options.expires = new Date();
+            t.setDate(t.getDate() + days);
+        }
+        value = String(value);
+        document.cookie = [encodeURIComponent(key), '=', options.raw ? value : encodeURIComponent(value), options.expires ? '; expires=' + options.expires.toUTCString() : '', options.path ? '; path=' + options.path : '', options.domain ? '; domain=' + options.domain : '', options.secure ? '; secure' : ''].join('');
+        return;
+    }
+    options = value || {};
+    let decode = options.raw ? function (s) {
+        return s;
+    } : decodeURIComponent;
+    let pairs = document.cookie.split('; ');
+    for (let i = 0, pair; pair = pairs[i] && pairs[i].split('='); i++) {
+        if (decode(pair[0]) === key)
+            return decode(pair[1] || '');
+    }
+}
+
+// 获取微信授权以后返回的参数
+function getURIParams() {
+    let nickname = window.atob(decodeURIComponent(getParams("nickname"))) || Cookie('nickname') || '';
+    let nonce = getParams('nonce') || Cookie('nonce') || '';
+    let partnerid = getParams('partnerid') || Cookie('partnerid') || '';
+    let wxname =  decodeURIComponent(getParams('wxname')) || Cookie('wxname') || '';
+    let wxno = getParams('wxno') || Cookie('wxno') || '';
+    let openid = getParams('openid') || Cookie('openid') || '';
+    let timestamp = getParams('timestamp') || Cookie('timestamp') || '';
+    let headimgurl = getParams('headimgurl') || Cookie('headimgurl') || '';
+    let subscribe = getParams('subscribe') || Cookie('subscribe') || '';
+    let signature = getParams('signature') || Cookie('signature') || '';
+    let unionid = getParams('unionid') || Cookie('unionid') || '';
+
+    if (nickname != null && nickname !== '') {
+        Cookie('nickname', nickname, { path: "/" });
+    }
+    if (nonce != null && nonce !== '') {
+        Cookie('nonce', nonce, { path: "/" });
+    }
+    if (partnerid != null && partnerid !== '') {
+        Cookie('partnerid', partnerid, { path: "/" });
+    }
+    if (wxname != null && wxname !== '') {
+        Cookie('wxname', wxname, { path: "/" });
+    }
+    if (wxno != null && wxno !== '') {
+        Cookie('wxno', wxno, { path: "/" });
+    }
+    if (openid != null && openid !== '') {
+        Cookie('openid', openid, { path: "/" });
+    }
+    if (timestamp != null && timestamp !== '') {
+        Cookie('timestamp', timestamp, { path: "/" });
+    }
+    if (headimgurl != null && headimgurl !== '') {
+        Cookie('headimgurl', headimgurl, { path: "/" });
+    }
+    if (subscribe != null && subscribe !== '') {
+        Cookie('subscribe', subscribe, { path: "/" });
+    }
+    if (signature != null && signature !== '') {
+        Cookie('signature', signature, { path: "/" });
+    }
+    if (unionid != null && unionid !== '') {
+        Cookie('unionid', unionid, { path: "/" });
+    }
+
+    return {
+        nickname: nickname,
+        nonce: nonce,
+        partnerid: partnerid,
+        wxname: wxname,
+        wxno: wxno,
+        openid: openid,
+        timestamp: timestamp,
+        headimgurl: headimgurl,
+        subscribe: subscribe,
+        signature: signature,
+        unionid: unionid
+    };
+}
+
+</script>
+</body>
+</html>

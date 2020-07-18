@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>过滤数组对象</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+    <script src="js/axios.min.js"></script>
+    <script src="js/vconsole.min.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/vue.js"></script>
+    <script type="text/javascript">
+        var vConsole = new VConsole();
+        document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + "px";
+        window.onresize = function () {
+            document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + "px";
+        };
+    </script>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-size: .3rem;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <div id="app">
+        <h2>过滤数组对象</h2>
+
+        <ul>
+            <li v-for="(item, index) in couponData">{{item.type + '、' + splitArrEle(item.valueList)}}</li>
+        </ul>
+
+
+    </div>
+
+    <script type="text/javascript">
+        // vue start
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                couponData: [],
+                testData: [{
+                        type: "11",
+                        value: "项目11--A"
+                    },
+                    {
+                        type: "22",
+                        value: "项目22--C"
+                    },
+                    {
+                        type: "33",
+                        value: "项目33--E"
+                    },
+                    // {
+                    //     type: "22",
+                    //     value: "项目22--D"
+                    // },
+                    {
+                        type: "11",
+                        value: "项目11--B"
+                    },
+                    {
+                        type: "33",
+                        value: "项目33--F"
+                    }
+                ]
+
+            },
+            methods: {
+                // 根据数组对象中的某个属性，过滤同类型的值
+                filterAttr(arr) {
+                    let resultArr = []; // 接收过滤结果的数组
+                    let tyList = {}; // 筛选类别结果
+                    arr.forEach(el => {
+                        // console.log('el:', el);
+                        if (!tyList[el.type]) { // 如果不存在该类别
+                            resultArr.push({ // 把当前数据放入结果数组
+                                type: el.type, // 类别
+                                valueList: [el.value] // 数组：对应类别的值
+                            });
+                            tyList[el.type] = el.type; // 记录到类别对象中
+                            console.log('tyList:', tyList);
+                        } else { // 如果已经存在该类别
+                            resultArr.forEach(per => { // 从过滤结果中的寻找对应的类别
+                                if (per.type == el.type) {
+                                    per.valueList.push(el.value); // 在对应类别的值中，插入新值
+                                }
+                            });
+                        }
+
+                    });
+                    return resultArr;
+                },
+
+                // 拼接数组元素
+                splitArrEle(arr) {
+                    // let reStr = ''
+                    // arr.filter((el) => {
+                    //     reStr += ' ' + el;
+                    // })
+                    // // console.log('reStr', reStr);
+                    // return reStr
+
+                    return arr.join(' ');
+                },
+
+
+            },
+            mounted() {
+                console.log('Entry——进入页面');
+
+                this.couponData = this.filterAttr(this.testData)
+                // console.log('this.testData: ', this.testData);
+                console.log('this.couponData: ', this.couponData);
+
+
+
+            }
+        })
+        // vue end
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WebSocket demo</title>
+<script type="text/javascript">
+
+    var ws;
+    function WS() {
+        // 1、直接判断全局对象中是否包含WebSocket对象，该方法不够严谨
+        // if (typeof(WebSocket) != "function") {
+        // if (window.WebSocket) {
+
+        // 2、Android上，浏览器不支持 WebSocket，也会存在 WebSocket 属性
+        if (typeof WebSocket != 'undefined') { // 判断浏览器是否支持 WebSocket 的方法
+            console.log("您的浏览器支持 WebSocket!");
+
+            // 创建WebSocket实例
+            // var ws = new WebSocket("ws://123.207.136.134:9010/ajaxchattest"); // ws
+            ws = new WebSocket("wss://echo.websocket.org"); // wss
+
+            // ws.readyState 当前的链接状态
+            console.log("ws.readyState：", ws.readyState);
+
+            // 连接成功后的回调函数
+            ws.onopen = function(e) {
+                console.log("连接已建立 readyState：", ws.readyState, e);
+                ws.send("发送数据");
+            };
+
+            // 服务器返回数据的回调函数
+            ws.onmessage = function(res) {
+                console.log("服务器返回数据：", res);
+                console.warn("返回的消息：", res.data);
+            };
+
+            // 连接失败后的回调函数
+            ws.onerror = function(err) {
+                console.log("连接错误失败：", err);
+            };
+
+            // 连接关闭后的回调函数
+            ws.onclose = function(e) {
+                console.log("连接已关闭：", e);
+            };
+        } else {    // 浏览器不支持 WebSocket
+            console.log("您的浏览器--不--支持 WebSocket!");
+        }
+    }
+
+
+    // 发送消息
+    function sendMsg(){
+        var txt = document.getElementById('inTxt').value;
+        if(txt){
+            if(ws){
+                console.log('发出的消息：', txt);
+                ws.send(txt);
+            }else{
+                console.log('WebSocket未连接 / 输入的消息：', txt);
+            }
+
+        }else{
+            console.log('未输入消息');
+        }
+    }
+
+    // 关闭连接
+    function closeWS(){
+        if(ws){
+            ws.close();
+        }else{
+            console.log('WebSocket未连接');
+        }
+    }
+
+
+</script>
+</head>
+<body>
+
+    <div id="sse">
+        <p>
+            <a href="javascript:WS()">连接</a>
+        </p>
+
+        <p>
+            <input type="text" id="inTxt"></input>
+            <a href="javascript:sendMsg()">发送消息</a>
+        </p>
+
+        <p>
+            <a href="javascript:closeWS()">关闭 WebSocket 连接</a>
+        </p>
+
+    </div>
+
+</body>
+</html>

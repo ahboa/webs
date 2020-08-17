@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>url 删除指定参数</title>
+    <script type="text/javascript">
+        let url = 'https://b.pingan.com.cn/branch/mkt/bankonline/dist/offlineBankless.html?orgId=0805&nickname=&nonce=691702243&partnerid=C0013&wxname=%E5%B9%B3%E5%AE%89%E9%93%B6%E8%A1%8C&wxno=pingan_bank&openid=oiBF4jh2W3f2CC0uyMm5vMilXPLY&timestamp=1597645905572&headimgurl=&subscribe=0&signature=d9e74e397380dc54a777db1488b4becab6994af5&unionid=&sex=';
+
+
+        if (url.indexOf('openid') != -1) {
+            console.log('url中有openid');
+            let urlArr = url.split('openid');
+            console.log('urlArr: ', urlArr);
+
+            let urlStr = urlArr[1].slice(urlArr[1].indexOf('&') + 1)
+            console.log('urlStr: ', urlStr);
+
+            let newUrl = urlArr[0] + urlStr;
+            console.log('newUrl: ', newUrl);
+        } else {
+            console.log('url中--没--有openid');
+
+        }
+    </script>
+</head>
+
+<body>
+
+
+</body>
+
+</html>
+
+</html>
+
+</html>
